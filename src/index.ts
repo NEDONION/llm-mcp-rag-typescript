@@ -33,7 +33,7 @@ async function retrieveContext(prompt: string, topK: number): Promise<string> {
         const content = fs.readFileSync(path.join(knowledgeDir, file), 'utf-8');
         await embeddingRetriever.embedDocument(content);
     }
-    return (await embeddingRetriever.retrieve(prompt, topK)).join('\n')
+    return (await embeddingRetriever.retrieveFromMemory(prompt, topK)).join('\n')
 }
 
 async function testChineseMovieRAG() {

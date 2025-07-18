@@ -40,7 +40,7 @@ export default class VectorStore {
      * @param topK 返回的最相似文档数量（默认值为 3）
      * @returns 与查询向量最相似的文档内容列表
      */
-    async search(queryEmbedding: number[], topK: number = 3): Promise<string[]> {
+    async search(queryEmbedding: number[], topK: number = 3): Promise<{ document: string; score: number }[]> {
         const scored = this.vectorStore.map((item) => ({
             document: item.document,
             score: this.cosineSimilarity(queryEmbedding, item.embedding),
@@ -50,12 +50,23 @@ export default class VectorStore {
             .sort((a, b) => b.score - a.score)
             .slice(0, topK);
 
-        // 按得分从高到低排序，并返回前 topK 个文档
         console.log(`[VectorStore] Search complete. Top ${sorted.length} results selected.`);
-        return sorted.map((item, idx) => {
+        sorted.forEach((item, idx) => {
             console.log(`[VectorStore] Result #${idx + 1}: score=${item.score.toFixed(4)}`);
-            return item.document;
         });
+
+        return sorted;
+    }
+
+
+    /**
+     * 返回当前内存中的文档摘要列表（不包含向量数据）
+     */
+    listEmbeddings(): { index: number; preview: string }[] {
+        return this.vectorStore.map((item, idx) => ({
+            index: idx,
+            preview: item.document.slice(0, 50) + '...'  // 返回前50个字符
+        }));
     }
 
     /**

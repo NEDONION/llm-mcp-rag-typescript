@@ -1,4 +1,4 @@
-import { connectMongo } from "../db/mongoClient";
+import {connectMongo} from "../db/mongoClient";
 import EmbeddingRetriever from "../rag/EmbeddingRetriever";
 import Knowledge from "../models/knowledge";
 import Embedding from "../models/embedding";
@@ -10,6 +10,14 @@ class RAGService {
     this.retriever = new EmbeddingRetriever(embeddingModel);
   }
 
+  /**
+   * 获取当前加载的所有嵌入向量摘要
+   */
+  getLoadedEmbeddingSummaries() {
+    return this.retriever.getLoadedEmbeddingSummaries();
+  }
+
+
   async loadFromDB(filter: { language?: string; category?: string; slug?: string }) {
     await connectMongo();
     const docs = await Knowledge.find(filter);
@@ -18,17 +26,28 @@ class RAGService {
     }
   }
 
-  async retrieveContextFromMemory(prompt: string, topK: number = 3): Promise<string> {
-    const results = await this.retriever.retrieveFromMemory(prompt, topK);
-    return results.join('\n');
+  async loadEmbeddingsIntoVectorStoreFromDB() {
+    await connectMongo();
+    const all = await Embedding.find({}, { vector: 1, content: 1 });
+    console.log(`[RAGService] Loading ${all.length} embeddings into memory.`);
+
+    for (const doc of all) {
+      await this.retriever.loadVector(doc.vector, doc.content);
+    }
+
+    console.log(`[RAGService] Finished loading embeddings to VectorStore.`);
+  }
+
+  // 从内存向量中检索相似文档
+  async retrieveContextFromMemory(prompt: string, topK: number = 3): Promise<string[]> {
+    return await this.retriever.retrieveFromMemory(prompt, topK);
   }
 
   // 会超时因为不是 向量数据库
-  async retrieveContextFromDB(prompt: string, topK: number = 3): Promise<string> {
-    const results = await this.retriever.retrieveFromDB(prompt, topK);
-    return results.join('\n');
+  // 从数据库中检索Embedding并计算向量来获取 相似文档
+  async retrieveContextFromDB(prompt: string, topK: number = 3): Promise<string[]> {
+    return await this.retriever.retrieveFromDB(prompt, topK);
   }
-
 
   async saveEmbedding(slug: string) {
     await connectMongo();

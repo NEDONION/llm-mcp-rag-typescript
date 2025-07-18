@@ -1,5 +1,5 @@
 import Embedding from "../models/embedding";
-import { logTitle } from "../utils";
+import {logTitle} from "../utils";
 import VectorStore from "./VectorStore";
 import 'dotenv/config';
 
@@ -82,7 +82,6 @@ export default class EmbeddingRetriever {
     }
 
 
-
     /**
      * 从内存 vector store 中检索最相似的文档（不触发 DB 加载）
      * Retrieve top-k most similar documents from vector store
@@ -90,39 +89,52 @@ export default class EmbeddingRetriever {
      * @param topK 返回的相似文档数量（默认 3）
      * @returns 匹配到的文本文档数组
      */
-async retrieveFromMemory(query: string, topK: number = 3): Promise<string[]> {
-    logTitle('RETRIEVE FROM MEMORY');
-    console.log(`[Memory] Query: "${query}", topK: ${topK}`);
-  
-    const queryEmbedding = await this.embedQuery(query);
-    return this.vectorStore.search(queryEmbedding, topK);
-  }
+    async retrieveFromMemory(query: string, topK: number = 3): Promise<string[]> {
+        logTitle('RETRIEVE FROM MEMORY');
+        console.log(`[Memory] Query: "${query}", topK: ${topK}`);
 
-  /**
- * 从数据库加载全部 embedding 到内存后，再执行相似度检索
- * Retrieve similar documents after loading all embeddings from DB
- */
-async retrieveFromDB(query: string, topK: number = 3): Promise<string[]> {
-    logTitle('RETRIEVE FROM DB');
-    console.log(`[DB] Loading all embeddings from DB...`);
-  
-    const queryEmbedding = await this.embedQuery(query);
-  
-    const embeddings = await Embedding.find({}, { content: 1, vector: 1 }).lean();
-    for (const item of embeddings) {
-      await this.vectorStore.addEmbedding(item.vector, item.content);
+        const queryEmbedding = await this.embedQuery(query);
+        return this.vectorStore.search(queryEmbedding, topK);
     }
-  
-    console.log(`[DB] Loaded ${embeddings.length} embeddings into memory.`);
-    return this.vectorStore.search(queryEmbedding, topK);
-  }
-  
+
+    /**
+     * 从数据库加载全部 embedding 到内存后，再执行相似度检索
+     * Retrieve similar documents after loading all embeddings from DB
+     */
+    async retrieveFromDB(query: string, topK: number = 3): Promise<string[]> {
+        logTitle('RETRIEVE FROM DB');
+        console.log(`[DB] Loading all embeddings from DB...`);
+
+        const queryEmbedding = await this.embedQuery(query);
+
+        const embeddings = await Embedding.find({}, {content: 1, vector: 1}).lean();
+        for (const item of embeddings) {
+            await this.vectorStore.addEmbedding(item.vector, item.content);
+        }
+
+        console.log(`[DB] Loaded ${embeddings.length} embeddings into memory.`);
+        return this.vectorStore.search(queryEmbedding, topK);
+    }
+
+    /**
+     * 将一个向量和对应的内容加载到向量存储中
+     */
+    loadVector(vector: number[], content: string) {
+        return this.vectorStore.addEmbedding(vector, content);
+    }
+
+
+    /**
+     * 返回当前内存中的文档摘要列表（不包含向量数据）
+     */
+    getLoadedEmbeddingSummaries() {
+        return this.vectorStore.listEmbeddings();
+    }
 
     /**
      * Get the name of the current embedding model
      */
     getModelName(): string {
         return this.embeddingModel;
-      }
-      
+    }
 }

@@ -63,6 +63,20 @@ ragRouter.post('/load', async (req, res) => {
   }
 });
 
+
+// POST /rag/load-all-embeddings
+ragRouter.post('/load-all-embeddings', async (req, res) => {
+    try {
+        await rag.loadEmbeddingsIntoVectorStoreFromDB(); // 调用服务层
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to load all embeddings from DB' });
+    }
+});
+
+
+
 // GET /rag/embeddings?category=movie
 ragRouter.get('/embeddings', async (req, res) => {
     const { category, model } = req.query;
@@ -74,6 +88,18 @@ ragRouter.get('/embeddings', async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch embedding list' });
     }
   });
+
+
+// GET /rag/vector-store
+ragRouter.get('/vector-store', (req, res) => {
+    try {
+        const items = rag.getLoadedEmbeddingSummaries();
+        res.json({ success: true, items });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to read in-memory vector store' });
+    }
+});
+
   
 
 export default ragRouter;
