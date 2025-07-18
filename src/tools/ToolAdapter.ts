@@ -4,7 +4,9 @@ import { ChatCompletionTool } from "openai/resources/chat/completions";
 
 export class ToolAdapter {
     static getToolDefinitionsForModel(model: string, tools: Tool[]): any[] {
-        if (model.startsWith("gpt")) {
+        const normalized = model.replace(/^openai\//i, "");
+
+        if (normalized.startsWith("gpt")) {
             return tools.map<ChatCompletionTool>((tool) => ({
                 type: "function",
                 function: {

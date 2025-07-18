@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 import { Tool } from "@modelcontextprotocol/sdk/types.js"
-import 'dotenv/config'
 import {logTitle} from "./utils";
 import {ToolAdapter} from "./tools/ToolAdapter";
+import 'dotenv/config'
 
 export interface ToolCall {
     id: string;
@@ -27,12 +27,20 @@ export default class ChatOpenAI {
             apiKey: process.env.OPENAI_API_KEY,
             baseURL: process.env.OPENAI_BASE_URL,
         });
+        console.log('[Init] OpenAI client initialized with model:', model);
         this.model = model;
         this.tools = tools;
 
         // 如果有系统提示词 和上下文，则添加到消息参数列表
-        if (systemPrompt) this.messages.push({role: "system", content: systemPrompt});
-        if (context) this.messages.push({role: "user", content: context});
+        if (systemPrompt) {
+            this.messages.push({role: "system", content: systemPrompt});
+            console.log('[Init] System prompt added:', systemPrompt);
+        }
+        if (context) {
+            // RAG
+            this.messages.push({ role: "user", content: context });
+            console.log('[Init] Initial context added:', context);
+        }
     }
 
     /**
@@ -44,15 +52,22 @@ export default class ChatOpenAI {
         if (prompt) {
             this.messages.push({role: "user", content: prompt});
         }
+
+        const toolsDef = this.getToolsDefinition();
+        console.log('[ToolDefs] Tools sent to model:', toolsDef.map(t => t.function?.name));
+
         const stream = await this.llm.chat.completions.create({
             model: this.model,
             messages: this.messages,
             stream: true,
-            tools: this.getToolsDefinition(),
+            tools: toolsDef,
         });
         let content = "";
         let toolCalls: ToolCall[] = [];
+
+        console.log('[LLM] Chat stream started for model:', this.model);
         logTitle('RESPONSE');
+
         for await (const chunk of stream) {
             const delta = chunk.choices[0].delta;
             // 处理普通Content
@@ -98,6 +113,7 @@ export default class ChatOpenAI {
             content: toolOutput,
             tool_call_id: toolCallId
         });
+        console.log(`[ToolResult] Result added for toolCallId=${toolCallId}:`, toolOutput);
     }
 
     /**
@@ -105,6 +121,13 @@ export default class ChatOpenAI {
      * Returns OpenAI-compatible tool definitions
      */
     private getToolsDefinition(): any[] {
-        return ToolAdapter.getToolDefinitionsForModel(this.model, this.tools);
+        try {
+            const defs = ToolAdapter.getToolDefinitionsForModel(this.model, this.tools);
+            console.log(`[ToolDefs] Getting tool definitions for model: ${this.model}`);
+            return defs;
+        } catch (err) {
+            console.error('[ToolDefs] Failed to convert tool definitions:', err);
+            throw err;
+        }
     }
 }

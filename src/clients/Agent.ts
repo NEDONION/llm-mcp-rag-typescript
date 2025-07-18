@@ -64,9 +64,12 @@ export default class Agent {
     async invoke(prompt: string) {
         if (!this.llm) throw new Error('Agent not initialized');
 
+        console.log('[Agent] Starting LLM chat...')
         // 启动对话
         let response = await this.llm.chat(prompt);
 
+        console.log('[Agent] Initial response received:', response.content);
+        console.log('[Agent] Starting tool call loop...');
         // 工具调用循环
         while (true) {
             if (response.toolCalls.length > 0) {
