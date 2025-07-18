@@ -45,12 +45,10 @@ export default class VectorStore {
         }));
 
         // 按得分从高到低排序，并返回前 topK 个文档
-        const topKDocuments = scored
+        return scored
             .sort((a, b) => b.score - a.score)
             .slice(0, topK)
             .map((item) => item.document);
-
-        return topKDocuments;
     }
 
     /**

@@ -110,3 +110,10 @@ prompts/task2_hackernews_csv.md
 ```bash
 pnpm dev run
 ```
+
+## MCP
+
+- [MCP Architecture](https://modelcontextprotocol.io/docs/concepts/architecture)
+- [MCP Client](https://modelcontextprotocol.io/quickstart/client)
+- [Fetch MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/fetch)
+- [Filesystem MCP](https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem)
