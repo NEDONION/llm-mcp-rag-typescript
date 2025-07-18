@@ -1,3 +1,4 @@
+import Embedding from "../models/embedding";
 import { logTitle } from "../utils";
 import VectorStore from "./VectorStore";
 import 'dotenv/config';
@@ -54,7 +55,7 @@ export default class EmbeddingRetriever {
      * @param document 要转换的文本
      * @returns 嵌入向量
      */
-    private async embed(document: string): Promise<number[]> {
+    async embed(document: string): Promise<number[]> {
         console.log(`[API] Sending text to embedding service...`);
         const response = await fetch(`${process.env.EMBEDDING_BASE_URL}/embeddings`, {
             method: 'POST',
@@ -80,17 +81,48 @@ export default class EmbeddingRetriever {
         return vector;
     }
 
+
+
     /**
-     * 基于相似度从 vector store 中检索与 query 最相近的文档
+     * 从内存 vector store 中检索最相似的文档（不触发 DB 加载）
      * Retrieve top-k most similar documents from vector store
      * @param query 查询内容
      * @param topK 返回的相似文档数量（默认 3）
      * @returns 匹配到的文本文档数组
      */
-    async retrieve(query: string, topK: number = 3): Promise<string[]> {
-        logTitle('RETRIEVING SIMILAR DOCUMENTS');
-        console.log(`[Retrieve] Starting search for query: "${query}" with topK = ${topK}`);
-        const queryEmbedding = await this.embedQuery(query);
-        return this.vectorStore.search(queryEmbedding, topK);
+async retrieveFromMemory(query: string, topK: number = 3): Promise<string[]> {
+    logTitle('RETRIEVE FROM MEMORY');
+    console.log(`[Memory] Query: "${query}", topK: ${topK}`);
+  
+    const queryEmbedding = await this.embedQuery(query);
+    return this.vectorStore.search(queryEmbedding, topK);
+  }
+
+  /**
+ * 从数据库加载全部 embedding 到内存后，再执行相似度检索
+ * Retrieve similar documents after loading all embeddings from DB
+ */
+async retrieveFromDB(query: string, topK: number = 3): Promise<string[]> {
+    logTitle('RETRIEVE FROM DB');
+    console.log(`[DB] Loading all embeddings from DB...`);
+  
+    const queryEmbedding = await this.embedQuery(query);
+  
+    const embeddings = await Embedding.find({}, { content: 1, vector: 1 }).lean();
+    for (const item of embeddings) {
+      await this.vectorStore.addEmbedding(item.vector, item.content);
     }
+  
+    console.log(`[DB] Loaded ${embeddings.length} embeddings into memory.`);
+    return this.vectorStore.search(queryEmbedding, topK);
+  }
+  
+
+    /**
+     * Get the name of the current embedding model
+     */
+    getModelName(): string {
+        return this.embeddingModel;
+      }
+      
 }

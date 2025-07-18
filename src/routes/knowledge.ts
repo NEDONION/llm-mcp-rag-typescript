@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { connectMongo } from '../db/mongoClient';
-import Knowledge from '../models/Knowledge'; 
+import Knowledge from '../models/knowledge'; 
 import slugify from 'slugify';
 
 const knowledgeRouter = Router();
