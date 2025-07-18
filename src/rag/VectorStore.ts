@@ -19,6 +19,7 @@ export default class VectorStore {
 
     constructor() {
         this.vectorStore = [];
+        console.log(`[VectorStore] Initialized empty in-memory vector store.`);
     }
 
     /**
@@ -29,6 +30,7 @@ export default class VectorStore {
      */
     async addEmbedding(embedding: number[], document: string) {
         this.vectorStore.push({ embedding, document });
+        console.log(`[VectorStore] Added embedding. Current total: ${this.vectorStore.length}`);
     }
 
     /**
@@ -44,11 +46,16 @@ export default class VectorStore {
             score: this.cosineSimilarity(queryEmbedding, item.embedding),
         }));
 
-        // 按得分从高到低排序，并返回前 topK 个文档
-        return scored
+        const sorted = scored
             .sort((a, b) => b.score - a.score)
-            .slice(0, topK)
-            .map((item) => item.document);
+            .slice(0, topK);
+
+        // 按得分从高到低排序，并返回前 topK 个文档
+        console.log(`[VectorStore] Search complete. Top ${sorted.length} results selected.`);
+        return sorted.map((item, idx) => {
+            console.log(`[VectorStore] Result #${idx + 1}: score=${item.score.toFixed(4)}`);
+            return item.document;
+        });
     }
 
     /**

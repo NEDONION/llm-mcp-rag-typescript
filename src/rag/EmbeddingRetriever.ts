@@ -8,7 +8,7 @@ import 'dotenv/config';
  * and retrieving similar documents from the in-memory vector store.
  */
 export default class EmbeddingRetriever {
-    private embeddingModel: string;     // 使用的 embedding 模型名称
+    private readonly embeddingModel: string;     // 使用的 embedding 模型名称
     private vectorStore: VectorStore;   // 本地向量存储，用于存储和检索嵌入
 
     /**
@@ -18,6 +18,7 @@ export default class EmbeddingRetriever {
     constructor(embeddingModel: string) {
         this.embeddingModel = embeddingModel;
         this.vectorStore = new VectorStore();
+        console.log(`[Init] EmbeddingRetriever initialized with model: ${embeddingModel}`);
     }
 
     /**
@@ -29,7 +30,8 @@ export default class EmbeddingRetriever {
     async embedDocument(document: string): Promise<number[]> {
         logTitle('EMBEDDING DOCUMENT');
         const embedding = await this.embed(document);
-        this.vectorStore.addEmbedding(embedding, document);
+        await this.vectorStore.addEmbedding(embedding, document);
+        console.log(`[Store] Document embedded and stored.`);
         return embedding;
     }
 
@@ -42,6 +44,7 @@ export default class EmbeddingRetriever {
     async embedQuery(query: string): Promise<number[]> {
         logTitle('EMBEDDING QUERY');
         const embedding = await this.embed(query);
+        console.log(`[Query] Query vector generated, length: ${embedding.length}`);
         return embedding;
     }
 
@@ -52,6 +55,7 @@ export default class EmbeddingRetriever {
      * @returns 嵌入向量
      */
     private async embed(document: string): Promise<number[]> {
+        console.log(`[API] Sending text to embedding service...`);
         const response = await fetch(`${process.env.EMBEDDING_BASE_URL}/embeddings`, {
             method: 'POST',
             headers: {
@@ -66,11 +70,14 @@ export default class EmbeddingRetriever {
         });
 
         const data = await response.json();
+        if (!response.ok) {
+            console.error(`[Error] Embedding service failed: ${JSON.stringify(data)}`);
+            throw new Error('Embedding API error');
+        }
 
-        // 控制台输出用于调试（可移除）
-        console.log(data.data[0].embedding);
-
-        return data.data[0].embedding;
+        const vector = data.data[0].embedding;
+        console.log(`[API] Received embedding vector, dimension: ${vector.length}`);
+        return vector;
     }
 
     /**
@@ -81,6 +88,8 @@ export default class EmbeddingRetriever {
      * @returns 匹配到的文本文档数组
      */
     async retrieve(query: string, topK: number = 3): Promise<string[]> {
+        logTitle('RETRIEVING SIMILAR DOCUMENTS');
+        console.log(`[Retrieve] Starting search for query: "${query}" with topK = ${topK}`);
         const queryEmbedding = await this.embedQuery(query);
         return this.vectorStore.search(queryEmbedding, topK);
     }
