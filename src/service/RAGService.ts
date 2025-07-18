@@ -58,19 +58,17 @@ class RAGService {
     }
   
     const vector = await this.retriever.embed(doc.content);
-  
-    const updatedEmbedding = await Embedding.findOneAndUpdate(
-      { slug },
+
+  return Embedding.findOneAndUpdate(
+      {slug},
       {
         vector,
         content: doc.content,
         model: this.retriever.getModelName(),
         category: doc.category
       },
-      { upsert: true, new: true }
-    );
-  
-    return updatedEmbedding; 
+      {upsert: true, new: true}
+  );
   }
 
   async getEmbeddingList(filter: { category?: string; model?: string }) {
