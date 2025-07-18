@@ -1,66 +1,63 @@
 import { Router } from 'express';
 import { connectMongo } from '../db/mongoClient';
-import mongoose from 'mongoose';
+import Knowledge from '../models/Knowledge'; 
 import slugify from 'slugify';
 
 const knowledgeRouter = Router();
 
-// 定义 Knowledge 模型
-const KnowledgeSchema = new mongoose.Schema({
-    slug: { type: String, required: true, unique: true },
-    category: { type: String, required: true },
-    title: { type: String, required: true },
-    language: { type: String, enum: ['en', 'zh'], required: true },
-    content: { type: String, required: true },
-  }, { timestamps: true });
-  
-  
-const Knowledge = mongoose.models.Knowledge || mongoose.model('Knowledge', KnowledgeSchema);
+// 统一连接 Mongo（可根据你的项目结构改为中间件）
+knowledgeRouter.use(async (_req, _res, next) => {
+  await connectMongo();
+  next();
+});
 
 // 获取知识库列表
-knowledgeRouter.get('/', async (req, res) => {
-  await connectMongo();
+knowledgeRouter.get('/', async (_req, res) => {
   try {
     const list = await Knowledge.find({}, { _id: 0, __v: 0 });
     res.json({ list });
-  } catch (e) {
-    res.status(500).json({ error: 'Failed to read knowledge from db' });
+  } catch (error) {
+    console.error('Failed to fetch knowledge:', error);
+    res.status(500).json({ error: 'Failed to read knowledge from database' });
   }
 });
 
-// 上传知识库
+// 上传知识库（支持新增或更新）
 knowledgeRouter.post('/', async (req, res) => {
-    await connectMongo();
-    const { category, title, language, content } = req.body;
-    if (!category || !title || !language || !content) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-  
-    const slug = slugify(`${title}-${language}`, { lower: true });
-  
-    try {
-      await Knowledge.findOneAndUpdate(
-        { slug },
-        { category, title, language, content },
-        { upsert: true, new: true }
-      );
-      res.json({ success: true, slug });
-    } catch (e) {
-      res.status(500).json({ error: 'Failed to save knowledge to db' });
-    }
-  });
+  const { category, title, language, content } = req.body;
 
-  // 删除知识库
-  knowledgeRouter.delete('/:slug', async (req, res) => {
-    await connectMongo();
-    const { slug } = req.params;
-    try {
-      await Knowledge.deleteOne({ slug });
-      res.json({ success: true });
-    } catch (e) {
-      res.status(500).json({ error: 'Failed to delete knowledge' });
-    }
-  });
-  
+  if (!category || !title || !language || !content) {
+    return res.status(400).json({ error: 'Missing required fields: category, title, language, content' });
+  }
 
-export default knowledgeRouter; 
+  const slug = slugify(`${title}-${language}`, { lower: true });
+
+  try {
+    await Knowledge.findOneAndUpdate(
+      { slug },
+      { category, title, language, content, slug },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, slug });
+  } catch (error) {
+    console.error('Failed to save knowledge:', error);
+    res.status(500).json({ error: 'Failed to save knowledge to database' });
+  }
+});
+
+// 删除知识库
+knowledgeRouter.delete('/:slug', async (req, res) => {
+  const { slug } = req.params;
+  try {
+    const result = await Knowledge.deleteOne({ slug });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: 'Knowledge not found' });
+    }
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Failed to delete knowledge:', error);
+    res.status(500).json({ error: 'Failed to delete knowledge from database' });
+  }
+});
+
+export default knowledgeRouter;
