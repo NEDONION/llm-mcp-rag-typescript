@@ -2,7 +2,8 @@ import React from 'react';
 import './index.css';
 import { DeleteOutlined } from '@ant-design/icons';
 
-import { Content } from '../ChatLLM'; 
+import { Content } from '../ChatLLM';
+import {Modal} from "antd";
 
 interface HistorySidebarProps {
   history: Content[][];
@@ -13,16 +14,23 @@ interface HistorySidebarProps {
 
 const HistorySidebar: React.FC<HistorySidebarProps> = ({ history,  restoreChatContent, updateHistory }) => {
   const handleDelete = (index: number) => {
-    if (window.confirm('确定要删除这条对话记录吗？')) {
-      // 删除指定对话（二维数组中的一项）
-      const updatedHistory = history.filter((_, idx) => idx !== index);
-      updateHistory(updatedHistory);
-    }
+    Modal.confirm({
+      title: 'Delete this conversation?',
+      content: 'Are you sure you want to delete this conversation record? This action cannot be undone.',
+      okText: 'Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk() {
+        const updatedHistory = history.filter((_, idx) => idx !== index);
+        updateHistory(updatedHistory);
+      },
+    });
   };
 
   return (
     <div className="sidebar-container">
-      <h3 className='sidebar-h'>历史对话</h3>
+      <h3 className='sidebar-h'>Chat History</h3>
+
       {history.map((conversation, index) => {
         // 假设每个对话数组中第一条消息为 guest 消息
         const guestItem = conversation[0];

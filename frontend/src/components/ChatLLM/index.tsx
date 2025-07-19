@@ -394,7 +394,7 @@ const ChatLLM = () => {
                   }}
               >
                 <h2 style={{ color: '#fff', fontSize: '20px', marginLeft: '30px' }}>
-                  琪露诺的智能提问机
+                  LLM-MCP-RAG BOT
                 </h2>
                 <BarsOutlined
                     onClick={handleToggleSidebar}

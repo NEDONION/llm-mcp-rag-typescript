@@ -1,0 +1,59 @@
+.admin-container {
+    padding: 32px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.admin-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.admin-table .ant-table-thead > tr > th {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.admin-table .ant-table-tbody > tr > td {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.admin-table .ant-btn-link {
+    padding: 0 6px;
+    font-weight: 500;
+}
+
+.admin-modal .ant-modal-content {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+}
+
+.admin-modal .ant-modal-title {
+    color: var(--text-color);
+}
+
+.admin-modal .ant-form-item-label > label {
+    color: var(--text-color);
+}
+
+.admin-modal .ant-input,
+.admin-modal .ant-input-textarea {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.admin-modal .ant-input::placeholder {
+    color: var(--secondary-text);
+}
