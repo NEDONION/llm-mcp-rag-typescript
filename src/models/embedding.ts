@@ -6,7 +6,8 @@ const EmbeddingSchema = new mongoose.Schema({
   vector: { type: [Number], required: true }, // 嵌入向量
   model: { type: String, required: true }, // 嵌入模型，例如 "BAAI/bge-m3"
   content: { type: String, required: true }, // 文本内容（可选，仅用于 debug 或检索）
-  category: String
+  category: String,
+  preview: { type: String },
 }, { timestamps: true });
 
 const Embedding = mongoose.models.Embedding || mongoose.model('Embedding', EmbeddingSchema);

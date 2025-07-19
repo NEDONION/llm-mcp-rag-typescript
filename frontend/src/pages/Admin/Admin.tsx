@@ -93,9 +93,7 @@ const AdminPage: React.FC = () => {
                         <p><strong>Category:</strong> {data.category}</p>
                         <p><strong>Content:</strong> {data.content}</p>
                         <p><strong>Model:</strong> {data.model}</p>
-                        <p><strong>Vector
-                            (preview):</strong> [{data.vector.slice(0, 5).map((v: number) => v.toFixed(6)).join(', ')},
-                            ... ({data.vector.length} dims)]</p>
+                        <p><strong>Vector Preview:</strong> {data.preview}</p>
                     </div>
                 )
             });

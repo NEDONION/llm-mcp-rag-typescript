@@ -59,6 +59,11 @@ class RAGService {
   
     const vector = await this.retriever.embed(doc.content);
 
+    const preview = `[${vector
+        .slice(0, 5)
+        .map((v) => Number(v).toFixed(6))
+        .join(', ')}, ... (${vector.length} dims)]`;
+
     // 保存嵌入向量
     const result = await Embedding.findOneAndUpdate(
         { slug },
@@ -66,7 +71,8 @@ class RAGService {
           vector,
           content: doc.content,
           model: this.retriever.getModelName(),
-          category: doc.category
+          category: doc.category,
+          preview
         },
         { upsert: true, new: true }
     );
@@ -83,7 +89,7 @@ class RAGService {
   async getEmbeddingList(filter: { category?: string; model?: string }) {
     await connectMongo();
     const list = await Embedding.find(filter)
-      .select('slug model category updatedAt vector') // 需要取出 vector 才能计算长度
+      .select('slug model category updatedAt vector preview') // 需要取出 vector 才能计算长度
       .sort({ updatedAt: -1 })
       .lean(); // 转换为普通对象以便修改字段
   
@@ -93,6 +99,7 @@ class RAGService {
       category: doc.category,
       updatedAt: doc.updatedAt,
       vectorDimension: doc.vector?.length ?? 0, // 安全访问
+      preview: doc.preview,
     }));
   }
   
