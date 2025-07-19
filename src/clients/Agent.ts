@@ -84,6 +84,7 @@ export default class Agent {
                         console.log(`Calling tool: ${toolCall.function.name}`);
                         console.log(`Arguments: ${toolCall.function.arguments}`);
 
+                        await mcp.init();
                         // 调用 MCP 工具，并将结果作为工具响应附加到对话中
                         const result = await mcp.callTool(
                             toolCall.function.name,

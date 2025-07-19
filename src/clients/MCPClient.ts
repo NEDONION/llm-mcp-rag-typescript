@@ -1,6 +1,6 @@
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { Tool } from "@modelcontextprotocol/sdk/types.js";
+import {Client} from "@modelcontextprotocol/sdk/client/index.js";
+import {StdioClientTransport} from "@modelcontextprotocol/sdk/client/stdio.js";
+import {Tool} from "@modelcontextprotocol/sdk/types.js";
 
 /**
  * MCPClient 封装了 MCP 协议客户端，用于连接工具服务并调用其功能。
@@ -21,7 +21,7 @@ export default class MCPClient {
      * @param version - 客户端版本（可选）
      */
     constructor(name: string, command: string, args: string[], version?: string) {
-        this.mcp = new Client({ name, version: version || "0.0.1" });
+        this.mcp = new Client({name, version: version || "0.0.1"});
         this.command = command;
         this.args = args;
     }
@@ -53,12 +53,18 @@ export default class MCPClient {
      * @param name 工具名称
      * @param params 参数对象（应符合 inputSchema）
      */
-    public callTool(name: string, params: Record<string, any>) {
+    public async callTool(name: string, params: Record<string, any>) {
+        // 如果尚未连接 transport，则自动连接
+        if (!this.transport) {
+            await this.connectToServer();
+        }
+
         return this.mcp.callTool({
             name,
             arguments: params,
         });
     }
+
 
     /**
      * 内部方法：连接到工具服务并拉取工具定义
@@ -86,7 +92,7 @@ export default class MCPClient {
 
             console.log(
                 "Connected to server with tools:",
-                this.tools.map(({ name }) => name)
+                this.tools.map(({name}) => name)
             );
         } catch (e) {
             console.log("Failed to connect to MCP server: ", e);
