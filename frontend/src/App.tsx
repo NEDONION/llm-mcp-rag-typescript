@@ -3,6 +3,7 @@ import './App.css';
 import ChatLLM from './components/ChatLLM';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import AdminPage from "./pages/Admin/Admin.tsx";
+import RAGAdminPage from "./pages/RAGAdminPage/RAGAdminPage.tsx";
 
 function App() {
     const [isDark, setIsDark] = useState(() => {
@@ -93,6 +94,8 @@ function App() {
                     <Route path="/" element={<ChatLLM/>}/>
                     {/*@ts-ignore*/}
                     <Route path="/admin" element={<AdminPage/>}/>
+                    {/*@ts-ignore*/}
+                    <Route path="/admin/rag" element={<RAGAdminPage />} />
                 </Routes>
             </div>
         </BrowserRouter>

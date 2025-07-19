@@ -59,16 +59,25 @@ class RAGService {
   
     const vector = await this.retriever.embed(doc.content);
 
-  return Embedding.findOneAndUpdate(
-      {slug},
-      {
-        vector,
-        content: doc.content,
-        model: this.retriever.getModelName(),
-        category: doc.category
-      },
-      {upsert: true, new: true}
-  );
+    // 保存嵌入向量
+    const result = await Embedding.findOneAndUpdate(
+        { slug },
+        {
+          vector,
+          content: doc.content,
+          model: this.retriever.getModelName(),
+          category: doc.category
+        },
+        { upsert: true, new: true }
+    );
+
+    // 标记知识文档为 embedded = true
+    await Knowledge.findOneAndUpdate(
+        { slug },
+        { embedded: true }
+    );
+
+    return result;
   }
 
   async getEmbeddingList(filter: { category?: string; model?: string }) {

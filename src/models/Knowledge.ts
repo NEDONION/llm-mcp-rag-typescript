@@ -6,6 +6,7 @@ const KnowledgeSchema = new mongoose.Schema({
   category: { type: String, required: true },
   title: { type: String, required: true },
   language: { type: String, enum: ['en', 'zh'], required: true },
+  embedded: { type: Boolean, default: false },
   content: { type: String, required: true },
 }, { timestamps: true });
 

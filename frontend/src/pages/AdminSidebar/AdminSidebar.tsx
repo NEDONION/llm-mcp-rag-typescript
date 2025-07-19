@@ -33,9 +33,9 @@ const AdminSidebar: React.FC = () => {
                         label: 'Knowledge Admin',
                     },
                     {
-                        key: '/admin/news',
+                        key: '/admin/rag',
                         icon: <FileSearchOutlined />,
-                        label: 'News RAG',
+                        label: 'RAG Admin',
                     },
                 ]}
             />
