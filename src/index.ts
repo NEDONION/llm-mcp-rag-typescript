@@ -12,8 +12,10 @@ const fileMCP = new MCPClient("mcp-server-file", "npx", ['-y', '@modelcontextpro
 const Y_COMBINATOR_URL = 'https://news.ycombinator.com/'
 
 async function main() {
+    const prompt = 'Who directed Matrix? What is the main plot of the movie, and why is the ending considered ambiguous?';
+    const context = await retrieveContext(prompt, 2);
     // Agent
-    const agent = new Agent('openai/gpt-4o-mini', [fetchMCP, fileMCP], '');
+    const agent = new Agent('openai/gpt-4o-mini', [fetchMCP, fileMCP], context);
     await agent.init();
     // Load task
     const task = await loadPrompt('task2_hackernews_csv.md');

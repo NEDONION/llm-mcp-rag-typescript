@@ -89,7 +89,7 @@ export default class EmbeddingRetriever {
      * @param topK 返回的相似文档数量（默认 3）
      * @returns 匹配到的文本文档数组
      */
-    async retrieveFromMemory(query: string, topK: number = 3): Promise<string[]> {
+    async retrieveFromMemory(query: string, topK: number = 3): Promise<{ document: string; score: number }[]> {
         logTitle('RETRIEVE FROM MEMORY');
         console.log(`[Memory] Query: "${query}", topK: ${topK}`);
 
@@ -101,7 +101,7 @@ export default class EmbeddingRetriever {
      * 从数据库加载全部 embedding 到内存后，再执行相似度检索
      * Retrieve similar documents after loading all embeddings from DB
      */
-    async retrieveFromDB(query: string, topK: number = 3): Promise<string[]> {
+    async retrieveFromDB(query: string, topK: number = 3): Promise<{ document: string; score: number }[]> {
         logTitle('RETRIEVE FROM DB');
         console.log(`[DB] Loading all embeddings from DB...`);
 
