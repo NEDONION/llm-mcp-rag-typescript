@@ -39,13 +39,13 @@ class RAGService {
   }
 
   // 从内存向量中检索相似文档
-  async retrieveContextFromMemory(prompt: string, topK: number = 3): Promise<string[]> {
+  async retrieveContextFromMemory(prompt: string, topK: number = 3): Promise<{ document: string; score: number }[]> {
     return await this.retriever.retrieveFromMemory(prompt, topK);
   }
 
   // 会超时因为不是 向量数据库
   // 从数据库中检索Embedding并计算向量来获取 相似文档
-  async retrieveContextFromDB(prompt: string, topK: number = 3): Promise<string[]> {
+  async retrieveContextFromDB(prompt: string, topK: number = 3): Promise<{ document: string; score: number }[]> {
     return await this.retriever.retrieveFromDB(prompt, topK);
   }
 
