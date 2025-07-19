@@ -8,7 +8,9 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "server": "tsx src/server/api.ts"
+    "server": "tsx src/server/api.ts",
+    "setup": "pnpm install && pnpm --filter ./frontend install",
+    "all": "pnpm run server & pnpm --filter ./frontend dev"
   },
   "keywords": [],
   "author": "",
