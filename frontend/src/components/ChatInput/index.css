@@ -1,0 +1,164 @@
+/* 从原来的 ChatLLM/index.css 中复制相关样式 */
+.chat-input {
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px;
+  position: relative;
+  margin-bottom: 3vh;
+  height: auto;
+  max-height: 30vh;
+  background-color: var(--input-bg);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.chat-input-search {
+  color: var(--text-color);
+  background-color: var(--input-bg);
+  border: none;
+  width: 100%;
+  max-height: 30vh;
+  height: auto;
+  resize: none;
+  outline: none !important;
+  margin-bottom: 2vh;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.chat-input-search::placeholder {
+  color: var(--secondary-text);
+  opacity: 1;
+}
+
+.chat-input-search:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.chat-input-button {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat-input-button-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.chat-input button {
+  background-color: transparent !important;
+  color: #bfcad6 !important;
+  border: none !important;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none !important;
+}
+
+.chat-input button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.chat-input button:hover {
+  background-color: transparent !important;
+  opacity: 0.9;
+}
+
+.chat-input button svg {
+  fill: #bfcad6 !important;
+  background-color: transparent !important;
+}
+
+.chat-input-button-right button svg {
+  fill: #bfcad6 !important;
+  background-color: transparent !important;
+}
+
+.image-preview {
+  position: relative;
+  width: 120px;
+  padding: 8px;
+  border-radius: 4px;
+  background: var(--secondary-bg);
+  margin-bottom: 8px;
+  border: 2px solid var(--border-color);
+}
+
+.clear-image {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  border-radius: 50%;
+  padding: 4px;
+  background: var(--bg-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.upload-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-top: 2px solid var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.file-input-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #bfcad6;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.new-conversation-button {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.stop-button {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.search-button {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* 其他相关样式... */

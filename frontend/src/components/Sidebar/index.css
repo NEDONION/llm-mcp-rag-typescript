@@ -1,0 +1,48 @@
+/* Sidebar styles */
+.sidebar {
+  background: var(--sidebar-bg);
+  width: 300px; /* Sidebar width */
+  /* 其他与 Sidebar 相关的样式 */
+}
+
+.sidebar-container {
+  padding: 10px;
+  color: var(--text-color);
+}
+.sidebar-header {
+  margin-top: 20px;
+  margin-right: 20px;
+}
+.sidebar-h {
+  margin: 20px;
+}
+
+.history-item {
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 5px;
+  display: flex; /* 添加 flex 布局 */
+  justify-content: space-between; /* 内容和图标之间的间距 */
+  align-items: center; /* 垂直居中对齐 */
+  color: var(--text-color);
+}
+
+.user-input {
+  margin: 10px;
+  transition: background-color 0.3s; /* 添加过渡效果 */
+}
+
+.history-item:hover {
+  background-color: var(--hover-color);
+  border-radius: 10px;
+}
+
+.icon {
+  font-size: 15px;
+  color: var(--text-color);
+}
+.icon:hover {
+  font-size: 15px;
+  color: #ff4d4f; /* 悬停时的颜色变化 */
+}

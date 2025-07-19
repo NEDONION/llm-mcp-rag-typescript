@@ -1,0 +1,16 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "40987969",
+      "name": "gpt",
+      "font_class": "gpt",
+      "unicode": "e929",
+      "unicode_decimal": 59689
+    }
+  ]
+}

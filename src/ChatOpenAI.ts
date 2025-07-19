@@ -47,14 +47,16 @@ export default class ChatOpenAI {
      * 主对话函数，发送用户 prompt 并处理返回的内容和工具调用
      * Main chat function: sends prompt and handles response and tool calls
      */
-    async chat(prompt?: string): Promise<{ content: string, toolCalls: ToolCall[] }> {
+    async chat(prompt?: string): Promise<{ content: string; toolCalls: ToolCall[] }> {
         logTitle('CHAT');
+
         if (prompt) {
-            this.messages.push({role: "user", content: prompt});
+            console.log('[UserPrompt]', prompt);
+            this.messages.push({ role: 'user', content: prompt });
         }
 
         const toolsDef = this.getToolsDefinition();
-        console.log('[ToolDefs] Tools sent to model:', toolsDef.map(t => t.function?.name));
+        console.log('[ToolDefs] Tools sent to model:', toolsDef.map((t) => t.function?.name));
 
         const stream = await this.llm.chat.completions.create({
             model: this.model,
@@ -62,46 +64,120 @@ export default class ChatOpenAI {
             stream: true,
             tools: toolsDef,
         });
-        let content = "";
-        let toolCalls: ToolCall[] = [];
+
+        let content = '';
+        const toolCalls: ToolCall[] = [];
 
         console.log('[LLM] Chat stream started for model:', this.model);
         logTitle('RESPONSE');
 
         for await (const chunk of stream) {
-            const delta = chunk.choices[0].delta;
-            // 处理普通Content
-            if (delta.content) {
-                const contentChunk = chunk.choices[0].delta.content || "";
+            const delta = chunk.choices[0]?.delta;
+
+            if (delta?.content) {
+                const contentChunk = delta.content;
                 content += contentChunk;
                 process.stdout.write(contentChunk);
             }
-            // 处理ToolCall
+
+            if (delta?.tool_calls) {
+                for (const toolCallChunk of delta.tool_calls) {
+                    // 确保 toolCalls 数组已有这个 index 的元素
+                    if (toolCalls.length <= toolCallChunk.index) {
+                        toolCalls.push({ id: '', function: { name: '', arguments: '' } });
+                    }
+                    const currentCall = toolCalls[toolCallChunk.index];
+                    if (toolCallChunk.id) currentCall.id += toolCallChunk.id;
+                    if (toolCallChunk.function?.name) currentCall.function.name += toolCallChunk.function.name;
+                    if (toolCallChunk.function?.arguments)
+                        currentCall.function.arguments += toolCallChunk.function.arguments;
+                }
+            }
+        }
+
+        console.log('[Chat Result] Final content:', content);
+        console.log('[Chat Result] toolCalls:', toolCalls);
+
+        // 构建 assistant 消息（避免空 tool_calls）
+        const assistantMessage: any = {
+            role: 'assistant',
+            content: content,
+        };
+
+        if (toolCalls.length > 0) {
+            assistantMessage.tool_calls = toolCalls.map((call) => ({
+                id: call.id,
+                type: 'function',
+                function: call.function,
+            }));
+        }
+
+        this.messages.push(assistantMessage);
+        console.log('[Message] Appended to context:', assistantMessage);
+
+        return {
+            content,
+            toolCalls,
+        };
+    }
+
+
+    /**
+     * chatStream：以流式返回 LLM 输出（逐 token），可用于 SSE/WebSocket
+     */
+    async *chatStream(prompt?: string): AsyncGenerator<string> {
+        logTitle('CHAT STREAM');
+        if (prompt) {
+            this.messages.push({ role: "user", content: prompt });
+        }
+
+        const toolsDef = this.getToolsDefinition();
+        console.log('[ToolDefs] Tools sent to model (stream):', toolsDef.map(t => t.function?.name));
+
+        const stream = await this.llm.chat.completions.create({
+            model: this.model,
+            messages: this.messages,
+            stream: true,
+            tools: toolsDef,
+        });
+
+        let content = '';
+        let toolCalls: ToolCall[] = [];
+
+        for await (const chunk of stream) {
+            const delta = chunk.choices[0].delta;
+
+            // 正常内容片段
+            if (delta.content) {
+                const token = delta.content;
+                content += token;
+                yield token;
+            }
+
+            // 工具调用（逐块构建）
             if (delta.tool_calls) {
                 for (const toolCallChunk of delta.tool_calls) {
-                    // 第一次要创建一个toolCall
                     if (toolCalls.length <= toolCallChunk.index) {
-                        toolCalls.push({id: '', function: {name: '', arguments: ''}});
+                        toolCalls.push({ id: '', function: { name: '', arguments: '' } });
                     }
-                    let currentCall = toolCalls[toolCallChunk.index];
-                    // 累加字段 逐块返回 - accumulating streamed fields
+                    const currentCall = toolCalls[toolCallChunk.index];
                     if (toolCallChunk.id) currentCall.id += toolCallChunk.id;
                     if (toolCallChunk.function?.name) currentCall.function.name += toolCallChunk.function.name;
                     if (toolCallChunk.function?.arguments) currentCall.function.arguments += toolCallChunk.function.arguments;
                 }
             }
         }
-        // 将 AI 回复加入历史消息（含 tool call）
+
+        // 添加完整回复和工具调用到消息历史
         this.messages.push({
             role: "assistant",
             content: content,
-            tool_calls: toolCalls.map(call => ({id: call.id, type: "function", function: call.function}))
+            tool_calls: toolCalls.length > 0
+                ? toolCalls.map(call => ({ id: call.id, type: "function", function: call.function }))
+                : undefined
         });
-        return {
-            content: content,
-            toolCalls: toolCalls,
-        };
     }
+
 
     /**
      * 添加工具返回结果到消息队列

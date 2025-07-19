@@ -107,4 +107,16 @@ export default class Agent {
             return response.content;
         }
     }
+
+    // 流式对话生成
+    async *stream(prompt: string) {
+        if (!this.llm) throw new Error('Agent not initialized');
+
+        for await (const chunk of this.llm.chatStream(prompt)) {
+            yield chunk;
+        }
+
+        await this.close();
+    }
+
 }
