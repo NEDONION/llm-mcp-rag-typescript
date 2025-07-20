@@ -1,8 +1,8 @@
 # LLM + MCP + RAG TypeScript Version
 
-Build a lightweight, framework-free Augmented LLM Agent in TypeScript, featuring multi-MCP tool orchestration, in-memory RAG knowledge retrieval, real-time chat, and a modern web interface for intelligent document Q&A, web summarization, and automated workflows.
+A lightweight, framework-free Augmented LLM Agent in TypeScript, featuring multi-MCP tool orchestration, in-memory RAG knowledge retrieval, real-time chat, and a modern web interface for intelligent document Q&A, web summarization, and automated workflows.
 
-> 基于TypeScript构建的轻量级无框架增强型大语言模型智能体，集成多MCP工具编排、内存RAG知识检索、实时聊天与现代Web界面，支持智能文档问答、网页摘要和自动化工作流。
+> 轻量级无框架增强型大语言模型智能体框架，集成多MCP工具编排、内存RAG知识检索、实时聊天与现代Web界面，支持智能文档问答、网页摘要和自动化工作流。
 
 ## Key Features
 
