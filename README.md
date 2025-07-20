@@ -23,41 +23,41 @@ like web summarization and document-grounded Q&A.
 
 ```mermaid
 graph TB
-    subgraph "UI Layer / 用户界面层"
-        UI[React Frontend App / 前端应用]
-        Admin[Admin Dashboard / 管理后台]
-        Chat[Chat Interface / 聊天界面]
+    subgraph "UI Layer 用户界面层"
+        UI[React Frontend App ]
+        Admin[Admin Dashboard]
+        Chat[Chat Interface]
     end
 
-    subgraph "API Gateway Layer / API网关层"
-        API[Express API Server / 接口服务器]
-        Routes[Route Controllers / 路由控制器]
+    subgraph "API Gateway Layer 网关层"
+        API[Express API Server]
+        Routes[Route Controllers]
     end
 
-    subgraph "Core Business Layer / 核心业务层"
+    subgraph "Core Business Layer"
         Agent[Agent Orchestrator / 协调器]
-        LLM[ChatOpenAI / 大语言模型]
-        RAG[Embedding Retriever / 向量检索]
-        VectorStore[Vector Store / 向量存储]
+        LLM[ChatOpenAI 大语言模型]
+        RAG[Embedding Retriever 向量检索]
+        VectorStore[Vector Store 向量存储]
     end
 
-    subgraph "Tool Integration Layer / 工具集成层"
-        MCP1[Fetch MCP Client / 抓取工具]
-        MCP2[Filesystem MCP Client / 文件工具]
-        MCP3[Other MCP Clients / 其他工具]
+    subgraph "Tool Integration Layer"
+        MCP1[Fetch MCP Client 抓取工具]
+        MCP2[Filesystem MCP Client 文件工具]
+        MCP3[Other MCP Clients 其他工具]
     end
 
-    subgraph "External Services / 外部服务层"
+    subgraph "External Services/Provider"
         OpenAI[OpenAI API]
-        EmbeddingAPI[Embedding Service / 向量服务]
-        Web[Web Pages / 网页]
-        FileSystem[Local Filesystem / 本地文件]
+        EmbeddingAPI[Embedding Service 向量服务]
+        Web[Web Pages]
+        FileSystem[Local Filesystem]
     end
 
-    subgraph "Storage Layer / 数据存储层"
-        Knowledge[Knowledge Docs / 知识库]
-        Output[Output Files / 输出文件]
-        Memory[In-Memory Vector Store / 内存向量]
+    subgraph "Storage Layer"
+        Knowledge[Knowledge Docs 知识库]
+        Output[Output Files]
+        Embedding[Embedding Store]
     end
 
 %% Connections
@@ -78,7 +78,7 @@ graph TB
     MCP3 --> Web
     LLM --> OpenAI
     RAG --> Knowledge
-    VectorStore --> Memory
+    VectorStore --> Embedding
     MCP2 --> Output
 ```
 
@@ -124,15 +124,15 @@ graph LR
 
 ```mermaid
 graph TB
-    subgraph "RAG Flow / RAG处理流程"
-        Q[User Query / 用户查询]
-        E[Embedding Generation / 向量生成]
-        S[Similarity Search / 相似度搜索]
-        R[Retrieved Docs / 检索结果]
-        C[Context Injection / 上下文注入]
+    subgraph "RAG Flow"
+        Q[User Query]
+        E[Embedding Generation 向量生成]
+        S[Similarity Search 相似度搜索]
+        R[Retrieved Docs 检索结果]
+        C[Context Injection 上下文注入]
     end
 
-    subgraph "Vector Store / 向量存储"
+    subgraph "Vector Store 向量存储"
         VS[VectorStore]
         VI[VectorStoreItem]
         V1[Vector 1]
@@ -147,7 +147,7 @@ graph TB
         KN[Doc N]
     end
 
-    subgraph "External Services / Model Providers"
+    subgraph "External Services/Providers"
         EM[Embedding API]
         BGE[BAAI/bge-m3 Model]
     end
