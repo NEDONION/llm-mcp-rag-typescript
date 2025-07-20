@@ -375,10 +375,18 @@ classDiagram
 ### 2. Configure environment variables
 
 ```env
+# LLM API Provider
 OPENAI_API_KEY=
 OPENAI_BASE_URL=
+
+# External Embedding Model Provider
+EMBEDDING_KEY=
+EMBEDDING_BASE_URL=
+
+#DB as Storage, we use MongoDB
+#DATABASE_URL=
 ```
-### 3. Local Start Testing Function (`Index.ts`)
+### 3. Local Start Testing Function (only `Index.ts` as demo)
 #### 3.1 Write your task prompt
 
 Add your task prompt in the `prompts/` directory.
