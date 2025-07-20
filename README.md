@@ -23,151 +23,176 @@ like web summarization and document-grounded Q&A.
 
 ```mermaid
 graph TB
-    subgraph "UI Layer 用户界面层"
-        UI[React Frontend App ]
-        Admin[Admin Dashboard]
-        Chat[Chat Interface]
-    end
+%% ==== User ====
+  User[User 用户]
 
-    subgraph "API Gateway Layer 网关层"
-        API[Express API Server]
-        Routes[Route Controllers]
-    end
+%% ==== UI ====
+  subgraph "UI Layer 用户界面"
+    UIGroup[Frontend UI - Chat]
+    UIAdmin[RAG Admin Management]
+  end
 
-    subgraph "Core Business Layer"
-        Agent[Agent Orchestrator / 协调器]
-        LLM[ChatOpenAI 大语言模型]
-        RAG[Embedding Retriever 向量检索]
-        VectorStore[Vector Store 向量存储]
-    end
+%% ==== API ====
+  subgraph "API Gateway"
+    API[Backend API Server]
+  end
 
-    subgraph "Tool Integration Layer"
-        MCP1[Fetch MCP Client 抓取工具]
-        MCP2[Filesystem MCP Client 文件工具]
-        MCP3[Other MCP Clients 其他工具]
-    end
+%% ==== Core ====
+  subgraph "Core Business"
+    Agent[Agent Orchestrator 协调器]
+    LLM[LLM 大模型接入]
+    RAG[RAG System]
+    VectorStore[In-Memory Vector Store]
+  end
 
-    subgraph "External Services/Provider"
-        OpenAI[OpenAI API]
-        EmbeddingAPI[Embedding Service 向量服务]
-        Web[Web Pages]
-        FileSystem[Local Filesystem]
-    end
+%% ==== Tool ====
+  subgraph "Tool Integration 工具集成层"
+    MCP[MCP Clients]
+  end
 
-    subgraph "Storage Layer"
-        Knowledge[Knowledge Docs 知识库]
-        Output[Output Files]
-        Embedding[Embedding Store]
-    end
+%% ==== Storage ====
+  subgraph "Storage Layer"
+    Knowledge[Knowledge DB]
+    Embedding[Embedding DB]
+    Output[Output Files]
+  end
 
-%% Connections
-    UI --> API
-    Admin --> API
-    Chat --> API
-    API --> Agent
-    Routes --> Agent
-    Agent --> LLM
-    Agent --> MCP1
-    Agent --> MCP2
-    Agent --> MCP3
-    Agent --> RAG
-    RAG --> VectorStore
-    RAG --> EmbeddingAPI
-    MCP1 --> Web
-    MCP2 --> FileSystem
-    MCP3 --> Web
-    LLM --> OpenAI
-    RAG --> Knowledge
-    VectorStore --> Embedding
-    MCP2 --> Output
+%% ==== External Only ====
+  subgraph "External Services/Providers"
+    OpenAI[OpenAI API Key]
+    BGE[BAAI/bge-m3 Model]
+  end
+
+%% ==== Request Flow ====
+  User --> UIGroup
+  UIGroup --> API
+  API --> Agent
+  Agent --> LLM
+  Agent --> RAG
+  Agent --> MCP
+  Agent --> API
+  API --> UIGroup
+  UIGroup --> User
+
+%% ==== RAG Flow ====
+  RAG --> VectorStore
+  RAG --> Embedding
+  RAG --> Knowledge
+  VectorStore --> Embedding
+
+%% ==== MCP ====
+  MCP --> Knowledge
+  MCP --> Output
+  MCP --> FileSystem
+
+%% ==== External Calls ====
+  LLM --> OpenAI
+  RAG --> BGE
 ```
 
 ## Agent Internal Architecture
 
 ```mermaid
 graph LR
-    subgraph "Core Components"
-        A[Agent Class]
-        C[ChatOpenAI]
-        M1[MCPClient 1]
-        M2[MCPClient 2]
-        M3[MCPClient N]
-    end
+  subgraph "Core Components"
+    A[Agent Instance]
+    LLM[ChatOpenAI]
+    M1[MCPClient 1]
+    M2[MCPClient 2]
+    M3[MCPClient N]
+  end
 
-    subgraph "Tool Execution Flow"
-        T1[Tool Call 1]
-        T2[Tool Call 2]
-        T3[Tool Call N]
-    end
+  subgraph "Tool Execution"
+    T1[Tool Call 1]
+    T2[Tool Call 2]
+    T3[Tool Call N]
+    R[Tool Results]
+  end
 
-    subgraph "Dialog Management"
-        D1[User Input]
-        D2[LLM Response]
-        D3[Tool Results]
-        D4[Final Reply]
-    end
+  subgraph "Dialog Flow"
+    U[User Input]
+    I[Initial LLM Response]
+    F[Final Reply]
+  end
 
-    A --> C
-    A --> M1
-    A --> M2
-    A --> M3
-    C --> D1
-    C --> D2
-    C --> D3
-    C --> D4
-    M1 --> T1
-    M2 --> T2
-    M3 --> T3
+%% User path
+  U --> A
+  A --> LLM
+  LLM --> I
+
+%% Tool path
+  LLM --> A
+  A --> M1
+  A --> M2
+  A --> M3
+  M1 --> T1
+  M2 --> T2
+  M3 --> T3
+  T1 --> R
+  T2 --> R
+  T3 --> R
+  R --> A
+  A --> LLM
+  LLM --> F
 ```
 
 ## RAG Architecture
 
 ```mermaid
 graph TB
-    subgraph "RAG Flow"
-        Q[User Query]
-        E[Embedding Generation 向量生成]
-        S[Similarity Search 相似度搜索]
-        R[Retrieved Docs 检索结果]
-        C[Context Injection 上下文注入]
-    end
+  subgraph "RAG System"
+    Q[User Query]
+    E[Embedding Generation 向量生成]
+    S[Similarity Search 相似度搜索]
+    VS[VectorStore ]
+    VI[Vector Dot Product & Top K 向量点积]
+    R[Retrieved Docs 检索结果]
+    C[Context Injection 上下文注入]
+    LLM[LLM]
+    A[Final Answer]
+  end
 
-    subgraph "Vector Store 向量存储"
-        VS[VectorStore]
-        VI[VectorStoreItem]
-        V1[Vector 1]
-        V2[Vector 2]
-        VN[Vector N]
-    end
+  subgraph "Embedding DB 向量数据库"
+    DB[Embedding DB]
+    D1[Doc1Embedding]
+    D2[Doc2Embedding]
+    DN[DocNEmbedding]
+  end
 
-    subgraph "Knowledge Base"
-        KB[Docs]
-        K1[Doc 1]
-        K2[Doc 2]
-        KN[Doc N]
-    end
+  subgraph "Knowledge DB 知识库文档"
+    KB[Docs]
+    K1[Doc 1]
+    K2[Doc 2]
+    KN[Doc N]
+  end
 
-    subgraph "External Services/Providers"
-        EM[Embedding API]
-        BGE[BAAI/bge-m3 Model]
-    end
+  subgraph "External Services/Providers"
+    EM[Embedding API]
+    BGE[BAAI/bge-m3 Model]
+  end
 
-    Q --> E
-    E --> EM
-    EM --> BGE
-    KB --> E
-    K1 --> E
-    K2 --> E
-    KN --> E
-    E --> VS
-    VS --> VI
-    VI --> V1
-    VI --> V2
-    VI --> VN
-    Q --> S
-    S --> VS
-    S --> R
-    R --> C
+%% Embedding Generation
+  Q --> E
+  E --> EM
+  EM --> BGE
+
+%% Upload & Embedding
+  KB --> E
+  E --> DB
+  DB --> D1
+  DB --> D2
+  DB --> DN
+
+%% Load to VectorStore
+  DB --> VS
+  VS --> VI
+
+%% Retrieval flow
+  Q --> S
+  S --> VS
+  VI --> R
+  R --> C
+  C --> LLM --> A
 ```
 
 ## Frontend Architecture
@@ -183,7 +208,7 @@ graph TB
     subgraph "Pages"
         ChatPage[Chat Page 对话]
         AdminPage[Admin Page 管理]
-        RAGPage[RAG Config Page RAG配置]
+        RAGPage[RAG Management Page]
     end
 
     subgraph "UI Components"
@@ -232,37 +257,46 @@ graph TB
 
 ```mermaid
 sequenceDiagram
-    participant User as User
-    participant UI as Frontend
-    participant API as API Server
-    participant Agent as Agent Orchestrator
-    participant LLM as LLM
-    participant MCP as Tools
-    participant RAG as RAG System
-    participant External as External Services/Model Provider
-    User ->> UI: Send Query
-    UI ->> API: HTTP Request
-    API ->> Agent: Init Agent
-    Agent ->> RAG: Retrieve Context
-    RAG ->> External: Request Embedding
-    External -->> RAG: Return Vectors 向量
-    RAG -->> Agent: Return Docs
-    Agent ->> LLM: Query + Context
-    LLM -->> Agent: LLM Response
+  participant User as User
+  participant UI as Frontend
+  participant API as API Server
+  participant Agent as Agent Orchestrator
+  participant LLM as LLM
+  participant MCP as Tools
+  participant RAG as RAG System
+  participant EmbeddingDB as Embedding Store
+  participant External as External Model Provider (e.g. bge-m3)
 
-    alt Tool Call Needed
-        Agent ->> MCP: Call Tool
-        MCP ->> External: Execute
-        External -->> MCP: Result
-        MCP -->> Agent: Tool Output
-        Agent ->> LLM: Send Result
-        LLM -->> Agent: Final Answer
-    end
+%% === Embedding Preparation Phase (outside runtime) ===
+  Note over RAG, External: [Build Phase] RAG receives new knowledge docs
+  RAG ->> External: Generate Embeddings
+  External -->> RAG: Return Vectors
+  RAG ->> EmbeddingDB: Store Embeddings
 
-    Agent -->> API: Return Response
-    API -->> UI: HTTP Response
-    UI -->> User: Show Result
+%% === Runtime Query Flow ===
+  User ->> UI: Send Query
+  UI ->> API: HTTP Request
+  API ->> Agent: Init Agent
+  Agent ->> RAG: Retrieve Context
+  RAG ->> EmbeddingDB: Load Matching Vectors
+  EmbeddingDB -->> RAG: Load Vectors into Memory
+  RAG -->> Agent: Return Context Docs
 
+  Agent ->> LLM: Query + Injected Context
+  LLM -->> Agent: LLM Response
+
+  alt Tool Call Needed
+    Agent ->> MCP: Call Tool
+    MCP ->> External: Execute Tool Logic
+    External -->> MCP: Tool Result
+    MCP -->> Agent: Tool Output
+    Agent ->> LLM: Send Tool Result
+    LLM -->> Agent: Final Answer
+  end
+
+  Agent -->> API: Return Final Response
+  API -->> UI: HTTP Response
+  UI -->> User: Show Result
 ```
 
 ## **The augmented LLM**
