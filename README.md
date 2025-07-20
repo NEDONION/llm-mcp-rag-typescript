@@ -383,7 +383,7 @@ EMBEDDING_KEY=
 EMBEDDING_BASE_URL=
 
 #DB as Storage, we use MongoDB
-#DATABASE_URL=
+DATABASE_URL=
 ```
 ### 3. Local Start Testing Function (only `Index.ts` as demo)
 #### 3.1 Write your task prompt
