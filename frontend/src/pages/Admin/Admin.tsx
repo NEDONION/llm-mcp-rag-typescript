@@ -68,7 +68,7 @@ const AdminPage: React.FC = () => {
 
     const handleSubmit = async () => {
         try {
-            const values = await form.validateFields();
+            const values = form.getFieldsValue();
             await axios.post('/api/knowledge', values);
             message.success('Saved successfully');
             setModalVisible(false);
@@ -118,14 +118,64 @@ const AdminPage: React.FC = () => {
                     <h2>Knowledge Management</h2>
                     <div>
                         <Button
-                            icon={<ArrowLeftOutlined/>}
-                            style={{marginRight: 12}}
-                            onClick={() => navigate('/')}
+                        icon={<ArrowLeftOutlined />}
+                        style={{
+                            marginRight: 12,
+                            padding: '6px 20px',
+                            border: 'none',
+                            background: '#1677ff',
+                            color: '#fff',
+                            fontWeight: 600,
+                            fontSize: 16,
+                            borderRadius: 8,
+                            boxShadow: '0 4px 10px rgba(22, 119, 255, 0.5)',
+                            transition: 'all 0.3s ease',
+                            transform: 'scale(1)',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#3c9eff'; // 更亮的蓝色
+                            e.currentTarget.style.boxShadow = '0 6px 18px rgba(0, 123, 255, 0.7)'; // 更显眼的蓝色阴影
+                            e.currentTarget.style.transform = 'scale(1.03)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = '#1677ff';
+                            e.currentTarget.style.boxShadow = '0 4px 10px rgba(22, 119, 255, 0.5)';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                        onClick={() => navigate('/')}
                         >
-                            Back
+                        Back
                         </Button>
-                        <Button type="primary" icon={<PlusOutlined/>} onClick={handleAdd}>
-                            Add Knowledge
+                        <Button
+                        icon={<PlusOutlined />}
+                        style={{
+                            padding: '6px 20px',
+                            border: 'none',
+                            background: '#1677ff',
+                            color: '#fff',
+                            fontWeight: 600,
+                            fontSize: 16,
+                            borderRadius: 8,
+                            boxShadow: '0 4px 10px rgba(22, 119, 255, 0.5)',
+                            transition: 'all 0.3s ease',
+                            transform: 'scale(1)',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 8,
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = '#3c9eff';
+                            e.currentTarget.style.boxShadow = '0 6px 18px rgba(0, 123, 255, 0.7)';
+                            e.currentTarget.style.transform = 'scale(1.03)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = '#1677ff';
+                            e.currentTarget.style.boxShadow = '0 4px 10px rgba(22, 119, 255, 0.5)';
+                            e.currentTarget.style.transform = 'scale(1)';
+                        }}
+                        onClick={handleAdd}
+                        >
+                        Add Knowledge
                         </Button>
                     </div>
                 </Header>
