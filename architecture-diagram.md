@@ -1,56 +1,54 @@
-# LLM + MCP + RAG 项目架构图
+# LLM + MCP + RAG Overall System Architecture
 
-## 整体系统架构
+## System Architecture 
 
 ```mermaid
 graph TB
-    subgraph "用户界面层"
-        UI[React前端应用]
-        Admin[管理后台]
-        Chat[聊天界面]
+    subgraph "UI Layer / 用户界面层"
+        UI[React Frontend App / 前端应用]
+        Admin[Admin Dashboard / 管理后台]
+        Chat[Chat Interface / 聊天界面]
     end
     
-    subgraph "API网关层"
-        API[Express API服务器]
-        Routes[路由控制器]
+    subgraph "API Gateway Layer / API网关层"
+        API[Express API Server / 接口服务器]
+        Routes[Route Controllers / 路由控制器]
     end
     
-    subgraph "核心业务层"
-        Agent[Agent协调器]
-        LLM[ChatOpenAI]
-        RAG[EmbeddingRetriever]
-        VectorStore[向量存储]
+    subgraph "Core Business Layer / 核心业务层"
+        Agent[Agent Orchestrator / 协调器]
+        LLM[ChatOpenAI / 大语言模型]
+        RAG[Embedding Retriever / 向量检索]
+        VectorStore[Vector Store / 向量存储]
     end
     
-    subgraph "工具集成层"
-        MCP1[Fetch MCP客户端]
-        MCP2[Filesystem MCP客户端]
-        MCP3[其他MCP客户端]
+    subgraph "Tool Integration Layer / 工具集成层"
+        MCP1[Fetch MCP Client / 抓取工具]
+        MCP2[Filesystem MCP Client / 文件工具]
+        MCP3[Other MCP Clients / 其他工具]
     end
     
-    subgraph "外部服务层"
+    subgraph "External Services / 外部服务层"
         OpenAI[OpenAI API]
-        EmbeddingAPI[Embedding服务]
-        Web[外部网页]
-        FileSystem[本地文件系统]
+        EmbeddingAPI[Embedding Service / 向量服务]
+        Web[Web Pages / 网页]
+        FileSystem[Local Filesystem / 本地文件]
     end
     
-    subgraph "数据存储层"
-        Knowledge[知识库文档]
-        Output[输出文件]
-        Memory[内存向量存储]
+    subgraph "Storage Layer / 数据存储层"
+        Knowledge[Knowledge Docs / 知识库]
+        Output[Output Files / 输出文件]
+        Memory[In-Memory Vector Store / 内存向量]
     end
     
-    %% 用户界面层连接
+    %% Connections
     UI --> API
     Admin --> API
     Chat --> API
     
-    %% API层连接
     API --> Agent
     Routes --> Agent
     
-    %% 核心业务层连接
     Agent --> LLM
     Agent --> MCP1
     Agent --> MCP2
@@ -60,43 +58,40 @@ graph TB
     RAG --> VectorStore
     RAG --> EmbeddingAPI
     
-    %% 工具集成层连接
     MCP1 --> Web
     MCP2 --> FileSystem
     MCP3 --> Web
     
-    %% 外部服务连接
     LLM --> OpenAI
     
-    %% 数据存储连接
     RAG --> Knowledge
     VectorStore --> Memory
     MCP2 --> Output
 ```
 
-## Agent内部架构
+## Agent Internal Architecture
 
 ```mermaid
 graph LR
-    subgraph "Agent核心组件"
-        A[Agent类]
+    subgraph "Core Components"
+        A[Agent Class]
         C[ChatOpenAI]
         M1[MCPClient 1]
         M2[MCPClient 2]
         M3[MCPClient N]
     end
     
-    subgraph "工具调用流程"
-        T1[工具调用1]
-        T2[工具调用2]
-        T3[工具调用N]
+    subgraph "Tool Execution Flow"
+        T1[Tool Call 1]
+        T2[Tool Call 2]
+        T3[Tool Call N]
     end
     
-    subgraph "对话管理"
-        D1[用户输入]
-        D2[LLM响应]
-        D3[工具结果]
-        D4[最终回复]
+    subgraph "Dialog Management"
+        D1[User Input / 用户输入]
+        D2[LLM Response / LLM响应]
+        D3[Tool Results / 工具结果]
+        D4[Final Reply / 最终回复]
     end
     
     A --> C
@@ -114,36 +109,36 @@ graph LR
     M3 --> T3
 ```
 
-## RAG系统架构
+## RAG Architecture
 
 ```mermaid
 graph TB
-    subgraph "RAG处理流程"
-        Q[用户查询]
-        E[Embedding生成]
-        S[相似度搜索]
-        R[检索结果]
-        C[上下文注入]
+    subgraph "RAG Flow / RAG处理流程"
+        Q[User Query / 用户查询]
+        E[Embedding Generation / 向量生成]
+        S[Similarity Search / 相似度搜索]
+        R[Retrieved Docs / 检索结果]
+        C[Context Injection / 上下文注入]
     end
     
-    subgraph "向量存储"
+    subgraph "Vector Store / 向量存储"
         VS[VectorStore]
         VI[VectorStoreItem]
-        V1[向量1]
-        V2[向量2]
-        VN[向量N]
+        V1[Vector 1]
+        V2[Vector 2]
+        VN[Vector N]
     end
     
-    subgraph "知识库"
-        KB[知识库文档]
-        K1[文档1]
-        K2[文档2]
-        KN[文档N]
+    subgraph "Knowledge Base"
+        KB[Docs]
+        K1[Doc 1]
+        K2[Doc 2]
+        KN[Doc N]
     end
     
-    subgraph "外部服务"
+    subgraph "External Services / Model Providers"
         EM[Embedding API]
-        BGE[BAAI/bge-m3模型]
+        BGE[BAAI/bge-m3 Model]
     end
     
     Q --> E
@@ -167,39 +162,39 @@ graph TB
     R --> C
 ```
 
-## 前端架构
+## Frontend Architecture
 
 ```mermaid
 graph TB
-    subgraph "React应用"
+    subgraph "React App"
         App[App.tsx]
         Router[React Router]
-        Theme[主题管理]
+        Theme[Theme Provider]
     end
     
-    subgraph "页面组件"
-        ChatPage[聊天页面]
-        AdminPage[管理页面]
-        RAGPage[RAG管理页面]
+    subgraph "Pages"
+        ChatPage[Chat Page 对话]
+        AdminPage[Admin Page 管理]
+        RAGPage[RAG Config Page RAG配置]
     end
     
-    subgraph "UI组件"
-        ChatLLM[ChatLLM组件]
-        ChatInput[ChatInput组件]
-        AIAnswer[AIAnswer组件]
-        Sidebar[Sidebar组件]
-        AdminLayout[AdminLayout组件]
+    subgraph "UI Components"
+        ChatLLM[ChatLLM]
+        ChatInput[ChatInput]
+        AIAnswer[AI Answer]
+        Sidebar[Sidebar]
+        AdminLayout[Admin Layout]
     end
     
-    subgraph "API层"
-        APIClient[API客户端]
-        Axios[Axios请求]
+    subgraph "API Layer"
+        APIClient[API Client]
+        Axios[Axios]
     end
     
-    subgraph "样式系统"
-        CSS[CSS样式]
+    subgraph "Styling"
+        CSS[CSS Modules]
         Antd[Ant Design]
-        Icons[图标库]
+        Icons[Icon Set]
     end
     
     App --> Router
@@ -232,132 +227,41 @@ graph TB
     CSS --> Icons
 ```
 
-## 数据流架构
+## Data Flow Sequence Diagram
 
 ```mermaid
 sequenceDiagram
-    participant User as 用户
-    participant UI as 前端界面
-    participant API as API服务器
-    participant Agent as Agent
+    participant User as User
+    participant UI as Frontend
+    participant API as API Server
+    participant Agent as Agent Orchestrator
     participant LLM as LLM
-    participant MCP as MCP工具
-    participant RAG as RAG系统
-    participant External as 外部服务
+    participant MCP as Tools
+    participant RAG as RAG System
+    participant External as External Services/Model Provider
     
-    User->>UI: 发送查询
-    UI->>API: HTTP请求
-    API->>Agent: 初始化Agent
-    Agent->>RAG: 检索相关上下文
-    RAG->>External: 获取embedding
-    External-->>RAG: 返回向量
-    RAG-->>Agent: 返回相关文档
+    User->>UI: Send Query
+    UI->>API: HTTP Request
+    API->>Agent: Init Agent
+    Agent->>RAG: Retrieve Context
+    RAG->>External: Request Embedding
+    External-->>RAG: Return Vectors 向量
+    RAG-->>Agent: Return Docs
     
-    Agent->>LLM: 发送查询+上下文
-    LLM-->>Agent: 返回响应(可能包含工具调用)
+    Agent->>LLM: Query + Context
+    LLM-->>Agent: LLM Response
     
-    alt 需要工具调用
-        Agent->>MCP: 调用工具
-        MCP->>External: 执行操作
-        External-->>MCP: 返回结果
-        MCP-->>Agent: 工具执行结果
-        Agent->>LLM: 发送工具结果
-        LLM-->>Agent: 最终回复
+    alt Tool Call Needed
+        Agent->>MCP: Call Tool
+        MCP->>External: Execute
+        External-->>MCP: Result
+        MCP-->>Agent: Tool Output
+        Agent->>LLM: Send Result
+        LLM-->>Agent: Final Answer
     end
     
-    Agent-->>API: 返回最终回复
-    API-->>UI: HTTP响应
-    UI-->>User: 显示结果
+    Agent-->>API: Return Response
+    API-->>UI: HTTP Response
+    UI-->>User: Show Result
+
 ```
-
-## 部署架构
-
-```mermaid
-graph TB
-    subgraph "开发环境"
-        Dev[开发机器]
-        Node[Node.js运行时]
-        PNPM[PNPM包管理器]
-    end
-    
-    subgraph "前端构建"
-        Build[Vite构建]
-        Dist[静态文件]
-    end
-    
-    subgraph "后端服务"
-        Server[Express服务器]
-        TS[TypeScript编译]
-    end
-    
-    subgraph "外部依赖"
-        OpenAI[OpenAI API]
-        Embedding[Embedding服务]
-        MCP[MCP服务器]
-    end
-    
-    Dev --> Node
-    Node --> PNPM
-    PNPM --> Build
-    PNPM --> Server
-    
-    Build --> Dist
-    Server --> TS
-    
-    Server --> OpenAI
-    Server --> Embedding
-    Server --> MCP
-```
-
-## 技术栈架构
-
-```mermaid
-graph LR
-    subgraph "前端技术栈"
-        React[React 18]
-        TypeScript[TypeScript]
-        Vite[Vite]
-        Antd[Ant Design]
-        Router[React Router]
-    end
-    
-    subgraph "后端技术栈"
-        Node[Node.js]
-        Express[Express]
-        TS[TypeScript]
-        MCP[MCP SDK]
-        OpenAI[OpenAI SDK]
-    end
-    
-    subgraph "AI/ML技术"
-        LLM[GPT-4o-mini]
-        Embedding[BAAI/bge-m3]
-        Vector[向量计算]
-        RAG[检索增强生成]
-    end
-    
-    subgraph "开发工具"
-        PNPM[PNPM]
-        ESLint[ESLint]
-        Prettier[Prettier]
-        Vitest[Vitest]
-    end
-    
-    React --> TypeScript
-    TypeScript --> Vite
-    Vite --> Antd
-    Antd --> Router
-    
-    Node --> Express
-    Express --> TS
-    TS --> MCP
-    MCP --> OpenAI
-    
-    LLM --> Embedding
-    Embedding --> Vector
-    Vector --> RAG
-    
-    PNPM --> ESLint
-    ESLint --> Prettier
-    Prettier --> Vitest
-``` 
