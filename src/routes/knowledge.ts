@@ -2,6 +2,7 @@ import {Router} from 'express';
 import {connectMongo} from '../db/mongoClient';
 import Knowledge from '../models/knowledge';
 import slugify from 'slugify';
+import Embedding from "../models/embedding";
 
 const knowledgeRouter = Router();
 
@@ -34,6 +35,7 @@ knowledgeRouter.post('/', async (req, res) => {
     const slug = slugify(`${title}-${language}`, {lower: true});
 
     try {
+        // Save or update knowledge
         await Knowledge.findOneAndUpdate(
             {slug},
             {
@@ -42,6 +44,13 @@ knowledgeRouter.post('/', async (req, res) => {
             },
             {upsert: true, new: true}
         );
+
+        // Reset preview of matching embeddings
+        await Embedding.updateMany(
+            { slug },
+            { $set: { preview: '' } }
+        );
+
         res.json({success: true, slug});
     } catch (error) {
         console.error('Failed to save knowledge:', error);

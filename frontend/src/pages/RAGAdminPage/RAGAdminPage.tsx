@@ -44,6 +44,27 @@ const RAGAdminPage: React.FC = () => {
     const [categoryOptions, setCategoryOptions] = useState(defaultCategories);
     const [modelOptions, setModelOptions] = useState(defaultModels);
 
+    const [lastUpdated, setLastUpdated] = useState<string>('');
+
+    const fetchEmbeddings = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get('/api/rag/embeddings', {
+                params: {
+                    category: queryCategory,
+                    model: queryModel,
+                },
+            });
+            setEmbeddings(res.data.list || []);
+            setLastUpdated(new Date().toLocaleString());
+        } catch {
+            message.error('Failed to fetch embeddings');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     const handleAddCategory = (value: string) => {
         if (!categoryOptions.includes(value)) {
             setCategoryOptions([...categoryOptions, value]);
@@ -58,22 +79,6 @@ const RAGAdminPage: React.FC = () => {
         setQueryModel(value);
     };
 
-    const fetchEmbeddings = async () => {
-        setLoading(true);
-        try {
-            const res = await axios.get('/api/rag/embeddings', {
-                params: {
-                    category: queryCategory,
-                    model: queryModel,
-                },
-            });
-            setEmbeddings(res.data.list || []);
-        } catch {
-            message.error('Failed to fetch embeddings');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const fetchLoadedVectors = async () => {
         try {
@@ -115,11 +120,11 @@ const RAGAdminPage: React.FC = () => {
         fetchLoadedVectors();
     }, []);
 
+    // @ts-ignore
     return (
         <AdminLayout>
             <Title level={2}>RAG Vector Embeddings</Title>
-
-            <Row gutter={16} style={{marginBottom: 16}}>
+            <Row gutter={16} style={{ marginBottom: 8 }}>
                 <Col>
                     <Select
                         showSearch
@@ -140,15 +145,45 @@ const RAGAdminPage: React.FC = () => {
                         options={modelOptions.map(m => ({ label: m, value: m }))}
                     />
                 </Col>
-                <Col><Button type="primary" onClick={fetchEmbeddings}>Query</Button></Col>
-                <Col><Button onClick={handleLoadAll}>Load All to Memory</Button></Col>
+                <Col>
+                    <Button type="primary" onClick={fetchEmbeddings}>
+                        Query
+                    </Button>
+                </Col>
+                <Col>
+                    <Button onClick={handleLoadAll}>
+                        Load All to Memory
+                    </Button>
+                </Col>
             </Row>
 
-            <Row gutter={16} style={{marginBottom: 24}}>
-                <Col><Input placeholder="Slug to Load" value={loadSlug} onChange={(e) => setLoadSlug(e.target.value)}
-                            style={{width: 240}}/></Col>
-                <Col><Button type="dashed" onClick={handleLoad}>Load by Slug</Button></Col>
+            <Row gutter={16} align="middle" style={{ marginBottom: 16 }}>
+                <Col>
+                    <Button type="default" onClick={fetchEmbeddings}>
+                        🔄 Sync Embeddings
+                    </Button>
+                </Col>
+                <Col style={{ lineHeight: '32px', color: '#888' }}>
+                    Last synced at: <span style={{ fontWeight: 500 }}>{lastUpdated}</span>
+                </Col>
             </Row>
+
+            <Row gutter={16} style={{ marginBottom: 24 }}>
+                <Col>
+                    <Input
+                        placeholder="Slug to Load"
+                        value={loadSlug}
+                        onChange={(e) => setLoadSlug(e.target.value)}
+                        style={{ width: 240 }}
+                    />
+                </Col>
+                <Col>
+                    <Button onClick={handleLoad}>
+                        Load by Slug
+                    </Button>
+                </Col>
+            </Row>
+
 
             <Title level={4}>Embedding Table</Title>
             <Table

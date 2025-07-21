@@ -188,6 +188,7 @@ const AdminPage: React.FC = () => {
                                 title: 'Actions',
                                 render: (_, record) => (
                                     <div key={record.slug}>
+                                        <Space>
                                         <Tooltip title={record.embedded ? 'Already embedded' : 'Embed'}>
                                             <Button
                                                 type="primary"
@@ -200,14 +201,15 @@ const AdminPage: React.FC = () => {
                                                 Embed
                                             </Button>
                                         </Tooltip>
-                                        <Button type="link" icon={<EditOutlined/>} onClick={() => handleEdit(record)}>
+                                        <Button type="default" size="small" icon={<EditOutlined/>} onClick={() => handleEdit(record)}>
                                             Edit
                                         </Button>
                                         <Popconfirm title="Confirm delete?" onConfirm={() => handleDelete(record.slug)}>
-                                            <Button danger type="link" icon={<DeleteOutlined/>}>
+                                            <Button danger type="default" size="small" icon={<DeleteOutlined/>}>
                                                 Delete
                                             </Button>
                                         </Popconfirm>
+                                    </Space>
                                     </div>
                                 ),
                             },
