@@ -47,8 +47,8 @@ knowledgeRouter.post('/', async (req, res) => {
 
         // Reset preview of matching embeddings
         await Embedding.updateMany(
-            { slug },
-            { $set: { preview: '' } }
+            {slug},
+            {$set: {preview: '', vector: []}}
         );
 
         res.json({success: true, slug});

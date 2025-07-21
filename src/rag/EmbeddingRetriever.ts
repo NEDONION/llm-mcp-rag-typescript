@@ -28,13 +28,14 @@ export default class EmbeddingRetriever {
      * @param document 文本内容
      * @returns 文档的嵌入向量
      */
-    async embedDocument(document: string): Promise<number[]> {
+    async embedDocument(document: string, slugId: string): Promise<number[]> {
         logTitle('EMBEDDING DOCUMENT');
         const embedding = await this.embed(document);
-        await this.vectorStore.addEmbedding(embedding, document);
-        console.log(`[Store] Document embedded and stored.`);
+        await this.vectorStore.addEmbedding(slugId, embedding, document);
+        console.log(`[Store] Document embedded and stored for slugId=${slugId}`);
         return embedding;
     }
+
 
     /**
      * 嵌入一个查询文本（不添加到存储，仅用于检索）
@@ -109,7 +110,8 @@ export default class EmbeddingRetriever {
 
         const embeddings = await Embedding.find({}, {content: 1, vector: 1}).lean();
         for (const item of embeddings) {
-            await this.vectorStore.addEmbedding(item.vector, item.content);
+            const slugId = item.slug || `unknown-${Math.random()}`; // 确保健壮性
+            await this.vectorStore.addEmbedding(slugId, item.vector, item.content);
         }
 
         console.log(`[DB] Loaded ${embeddings.length} embeddings into memory.`);
@@ -119,9 +121,10 @@ export default class EmbeddingRetriever {
     /**
      * 将一个向量和对应的内容加载到向量存储中
      */
-    loadVector(vector: number[], content: string) {
-        return this.vectorStore.addEmbedding(vector, content);
+    loadVector(slugId: string, vector: number[], content: string) {
+        return this.vectorStore.addEmbedding(slugId, vector, content);
     }
+
 
 
     /**
@@ -136,5 +139,12 @@ export default class EmbeddingRetriever {
      */
     getModelName(): string {
         return this.embeddingModel;
+    }
+
+    /**
+     * Get the vector storage instance
+     */
+    getVectorStore(): VectorStore {
+        return this.vectorStore;
     }
 }

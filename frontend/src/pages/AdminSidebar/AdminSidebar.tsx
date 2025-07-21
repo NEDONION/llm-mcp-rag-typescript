@@ -15,7 +15,7 @@ const AdminSidebar: React.FC = () => {
     };
 
     return (
-        <div style={{ width: 200, height: '100vh', borderRight: '1px solid #f0f0f0' }}>
+        <div style={{ width: 200, height: '100vh', borderRight: '1px solid #f0f0f0', paddingTop: 24}}>
             <Menu
                 mode="inline"
                 defaultSelectedKeys={[window.location.pathname]}

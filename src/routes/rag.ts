@@ -100,6 +100,30 @@ ragRouter.get('/vector-store', (req, res) => {
     }
 });
 
+
+// DELETE /rag/embedding?slug=xxx
+ragRouter.delete('/embedding', async (req, res) => {
+    const { slug } = req.query;
+    if (!slug) return res.status(400).json({ error: 'Missing slug' });
+
+    try {
+        const result = await rag.removeEmbeddingFully(String(slug));
+        if (result.removedFromMemory || result.removedFromDB) {
+            res.json({
+                success: true,
+                message: `Removed embedding for slug=${slug}`,
+                ...result
+            });
+        } else {
+            res.status(404).json({ error: `No embedding found for slug=${slug}` });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to delete embedding' });
+    }
+});
+
+
   
 
 export default ragRouter;

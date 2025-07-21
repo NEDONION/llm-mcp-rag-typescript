@@ -22,7 +22,8 @@ class RAGService {
     await connectMongo();
     const docs = await Knowledge.find(filter);
     for (const doc of docs) {
-      await this.retriever.embedDocument(doc.content);
+      const slugId = `${doc.title}-${doc.language}`.toLowerCase().replace(/\s+/g, '-');
+      await this.retriever.embedDocument(doc.content, slugId);
     }
   }
 
@@ -32,7 +33,8 @@ class RAGService {
     console.log(`[RAGService] Loading ${all.length} embeddings into memory.`);
 
     for (const doc of all) {
-      await this.retriever.loadVector(doc.vector, doc.content);
+      const slugId = `${doc.title}-${doc.language}`.toLowerCase().replace(/\s+/g, '-');
+      await this.retriever.loadVector(slugId, doc.vector, doc.content);
     }
 
     console.log(`[RAGService] Finished loading embeddings to VectorStore.`);
@@ -102,8 +104,41 @@ class RAGService {
       preview: doc.preview,
     }));
   }
-  
-  
+
+
+  /**
+   * 从内存和数据库中同时删除 embedding，并将知识库的 embedded 状态设为 false
+   */
+  async removeEmbeddingFully(slugId: string): Promise<{
+    removedFromMemory: boolean;
+    removedFromDB: boolean;
+    updatedKnowledge: boolean;
+  }> {
+    let removedFromMemory = false;
+    let removedFromDB = false;
+    let updatedKnowledge = false;
+
+    // 1. 从内存中移除
+    if (this.retriever) {
+      const before = this.retriever.getVectorStore().listEmbeddings().length;
+      this.retriever.getVectorStore().removeBySlugId(slugId);
+      const after = this.retriever.getVectorStore().listEmbeddings().length;
+      removedFromMemory = after < before;
+    }
+
+    // 2. 从向量表中移除
+    const dbResult = await Embedding.deleteMany({ slug: slugId });
+    removedFromDB = dbResult.deletedCount > 0;
+
+    // 3. 回退 Knowledge 表中的 embedded 字段
+    const updateResult = await Knowledge.updateOne(
+        { slug: slugId },
+        { embedded: false }
+    );
+    updatedKnowledge = updateResult.modifiedCount > 0;
+
+    return { removedFromMemory, removedFromDB, updatedKnowledge };
+  }
 }
 
 export default RAGService;

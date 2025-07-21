@@ -3,6 +3,7 @@
  * Represents a single item in the vector store.
  */
 export interface VectorStoreItem {
+    slugId: string;        // 唯一标识符，如 "movie-inside-out-en"
     embedding: number[];   // 文档的嵌入向量
     document: string;      // 文档内容
 }
@@ -10,9 +11,6 @@ export interface VectorStoreItem {
 /**
  * VectorStore 是一个内存中的简单向量数据库。
  * 用于添加嵌入向量并基于余弦相似度执行查询。
- *
- * VectorStore is an in-memory store for document embeddings,
- * supporting addition and cosine similarity search.
  */
 export default class VectorStore {
     private vectorStore: VectorStoreItem[]; // 存储所有嵌入的数组
@@ -25,12 +23,15 @@ export default class VectorStore {
     /**
      * 添加一个文档及其对应的嵌入向量到向量存储中
      * Add a new document and its embedding to the store
+     * @param slugId 唯一标识符
      * @param embedding 嵌入向量
      * @param document 文本内容
      */
-    async addEmbedding(embedding: number[], document: string) {
-        this.vectorStore.push({ embedding, document });
-        console.log(`[VectorStore] Added embedding. Current total: ${this.vectorStore.length}`);
+    async addEmbedding(slugId: string, embedding: number[], document: string) {
+        // 移除已有 slugId 的条目（如有）
+        this.vectorStore = this.vectorStore.filter(item => item.slugId !== slugId);
+        this.vectorStore.push({ slugId, embedding, document });
+        console.log(`[VectorStore] Added embedding for slugId=${slugId}. Total: ${this.vectorStore.length}`);
     }
 
     /**
@@ -58,23 +59,48 @@ export default class VectorStore {
         return sorted;
     }
 
+    /**
+     * 返回当前内存中的文档摘要列表（包含 slugId 与 embedding 预览）
+     */
+    listEmbeddings(): {
+        slugId: string;
+        index: number;
+        preview: string;
+        embeddingPreview: string;
+    }[] {
+        return this.vectorStore.map((item, idx) => {
+            const dim = item.embedding.length;
+            const sliced = item.embedding.slice(0, 5).map(n => n.toFixed(6));
+            const preview = `[${sliced.join(', ')}, ... (${dim} dims)]`;
+
+            return {
+                slugId: item.slugId,
+                index: idx,
+                preview: item.document.slice(0, 50) + '...',
+                embeddingPreview: preview,
+            };
+        });
+    }
 
     /**
-     * 返回当前内存中的文档摘要列表（不包含向量数据）
+     * 根据 slugId 获取指定条目（可选工具）
      */
-    listEmbeddings(): { index: number; preview: string }[] {
-        return this.vectorStore.map((item, idx) => ({
-            index: idx,
-            preview: item.document.slice(0, 50) + '...'  // 返回前50个字符
-        }));
+    getEmbeddingBySlugId(slugId: string): VectorStoreItem | undefined {
+        return this.vectorStore.find(item => item.slugId === slugId);
+    }
+
+    /**
+     * 根据 slugId 移除指定条目（可选工具）
+     */
+    removeBySlugId(slugId: string): void {
+        const before = this.vectorStore.length;
+        this.vectorStore = this.vectorStore.filter(item => item.slugId !== slugId);
+        const after = this.vectorStore.length;
+        console.log(`[VectorStore] Removed slugId=${slugId}. Total changed: ${before} → ${after}`);
     }
 
     /**
      * 计算两个向量之间的余弦相似度
-     * Compute cosine similarity between two vectors
-     * @param vecA 向量 A
-     * @param vecB 向量 B
-     * @returns 余弦相似度值（越接近 1 表示越相似）
      */
     private cosineSimilarity(vecA: number[], vecB: number[]): number {
         const dotProduct = vecA.reduce((sum, a, idx) => sum + a * vecB[idx], 0);

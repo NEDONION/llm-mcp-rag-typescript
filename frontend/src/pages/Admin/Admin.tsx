@@ -47,6 +47,30 @@ const AdminPage: React.FC = () => {
 
     const navigate = useNavigate();
 
+    const handleRemoveEmbedding = async (slug: string) => {
+        try {
+            const res = await axios.delete('/api/rag/embedding', {
+                params: { slug },
+            });
+
+            if (res.data?.success) {
+                message.success(`Embedding removed for slug: ${slug}`);
+                // Update the list embedded status
+                setList(prev =>
+                    prev.map(item =>
+                        item.slug === slug ? { ...item, embedded: false } : item
+                    )
+                );
+            } else {
+                message.warning(`No embedding found for slug: ${slug}`);
+            }
+        } catch (error) {
+            console.error(error);
+            message.error(`Failed to remove embedding for slug: ${slug}`);
+        }
+    };
+
+
     const fetchKnowledgeList = async () => {
         setLoading(true);
         try {
@@ -206,10 +230,24 @@ const AdminPage: React.FC = () => {
                                         </Button>
                                         <Popconfirm title="Confirm delete?" onConfirm={() => handleDelete(record.slug)}>
                                             <Button danger type="default" size="small" icon={<DeleteOutlined/>}>
-                                                Delete
+                                                Knowledge
                                             </Button>
                                         </Popconfirm>
-                                    </Space>
+                                            <Popconfirm
+                                                title="Remove embedding only?"
+                                                onConfirm={() => handleRemoveEmbedding(record.slug)}
+                                            >
+                                                <Button
+                                                    size="small"
+                                                    type="dashed"
+                                                    danger
+                                                    icon={<DeleteOutlined />}
+                                                >
+                                                    Embedding
+                                                </Button>
+                                            </Popconfirm>
+
+                                        </Space>
                                     </div>
                                 ),
                             },

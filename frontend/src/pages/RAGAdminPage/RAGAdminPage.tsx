@@ -210,6 +210,7 @@ const RAGAdminPage: React.FC = () => {
                 columns={[
                     {title: 'Index', dataIndex: 'index'},
                     {title: 'Preview', dataIndex: 'preview'},
+                    {title: 'Embedding Preview', dataIndex: 'embeddingPreview'},
                 ]}
             />
         </AdminLayout>
