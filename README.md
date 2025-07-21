@@ -4,6 +4,12 @@ A lightweight, framework-free Augmented LLM Agent in TypeScript, featuring multi
 
 > 轻量级无框架增强型大语言模型智能体框架，集成多MCP工具编排、内存RAG知识检索、实时聊天与现代Web界面，支持智能文档问答、网页摘要和自动化工作流。
 
+
+## Demo Video
+
+[Watch the Demo on YouTube](https://youtu.be/bXcvtlj1xRg)
+
+
 ## Key Features
 
 - **Framework-Free**
