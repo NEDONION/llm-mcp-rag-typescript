@@ -1,9 +1,9 @@
 import React from 'react';
-import './index.css';
+import { List, Typography, Button, Modal, Tooltip } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
-
 import { Content } from '../ChatLLM';
-import {Modal} from "antd";
+
+const { Text } = Typography;
 
 interface HistorySidebarProps {
   history: Content[][];
@@ -12,7 +12,11 @@ interface HistorySidebarProps {
   updateHistory: (history: Content[][]) => void;
 }
 
-const HistorySidebar: React.FC<HistorySidebarProps> = ({ history,  restoreChatContent, updateHistory }) => {
+const HistorySidebar: React.FC<HistorySidebarProps> = ({
+                                                         history,
+                                                         restoreChatContent,
+                                                         updateHistory,
+                                                       }) => {
   const handleDelete = (index: number) => {
     Modal.confirm({
       title: 'Delete this conversation?',
@@ -28,26 +32,51 @@ const HistorySidebar: React.FC<HistorySidebarProps> = ({ history,  restoreChatCo
   };
 
   return (
-    <div className="sidebar-container">
-      <h3 className='sidebar-h'>Chat History</h3>
+      <div>
+        <Text strong style={{ fontSize: 16, marginBottom: 12, display: 'block' }}>
+          Chat History
+        </Text>
 
-      {history.map((conversation, index) => {
-        // 假设每个对话数组中第一条消息为 guest 消息
-        const guestItem = conversation[0];
-        if (!guestItem) return null;
+        <List
+            size="small"
+            bordered={false}
+            dataSource={history}
+            renderItem={(conversation, index) => {
+              const guestItem = conversation[0];
+              if (!guestItem) return null;
 
-        return (
-          <div key={index} className="history-item" onClick={() => restoreChatContent(conversation, index)}>
-            <span className="user-input" title={guestItem.content}>
-              {guestItem.content.slice(0, 15)}
-            </span>
-            <span onClick={(e) => { e.stopPropagation(); handleDelete(index); }} className="icon" >
-              <DeleteOutlined />
-            </span>
-          </div>
-        );
-      })}
-    </div>
+              return (
+                  <List.Item
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '4px 0',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => restoreChatContent(conversation, index)}
+                  >
+                      <Text ellipsis style={{ maxWidth: 180}}>
+                          {guestItem.content.slice(0, 15)}
+                      </Text>
+
+                    <Tooltip title="Delete conversation">
+                      <Button
+                          type="text"
+                          danger
+                          size="small"
+                          icon={<DeleteOutlined />}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(index);
+                          }}
+                      />
+                    </Tooltip>
+                  </List.Item>
+              );
+            }}
+        />
+      </div>
   );
 };
 

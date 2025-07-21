@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import './index.css';
-import { Layout } from 'antd';
+import {Button, Layout} from 'antd';
 import Guest from '../Guest';
 import AIanswer from '../AIanswer';
 import {fetchAIResponseOnce} from '../../api';
@@ -10,6 +10,7 @@ import ChatInput from '../ChatInput';
 import { RedoOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import '../../icon/font/iconfont.css';
+import {useNavigate} from "react-router-dom";
 
 const { Sider, Content } = Layout;
 
@@ -23,6 +24,7 @@ export interface Content {
 }
 
 const ChatLLM = () => {
+  const navigate = useNavigate();
   const [guestContents, setGuestContents] = useState<Content[]>([]);
   const [aiContents, setAIContents] = useState<Content[]>([]);
   const [searchValue, setSearchValue] = useState('');
@@ -371,7 +373,7 @@ const ChatLLM = () => {
   }, [isFloating]);
 
   return (
-      <Layout style={{ height: '100vh' }}>
+      <Layout style={{ height: '100vh'}}>
         {!collapsed && ( // 仅在未折叠时渲染 Sider
             <Sider
                 width={300}
@@ -393,27 +395,38 @@ const ChatLLM = () => {
                     alignItems: 'center',
                   }}
               >
-                <h2 style={{ color: '#fff', fontSize: '20px', marginLeft: '30px' }}>
-                  LLM-MCP-RAG BOT
+                <h2 style={{ color: '#fff', fontSize: '20px', marginLeft: '30px', marginTop: '16px' }}>
+                  MCP-RAG Engine
                 </h2>
                 <BarsOutlined
                     onClick={handleToggleSidebar}
                     style={{
                       cursor: 'pointer',
                       fontSize: '25px',
-                      color: '#fff',
                       marginLeft: '25px',
                     }}
                 />
               </div>
-              <div className="sidebar-container">
-                <HistorySidebar
-                    history={history}
-                    setSelectedHistoryIndex={setSelectedHistoryIndex}
-                    restoreChatContent={restoreChatContent}
-                    updateHistory={updateHistory}
-                />
+              <div className="sidebar-container" style={{ padding: '0 24px 16px' }}>
+                <Button
+                    type="primary"
+                    block
+                    style={{ marginTop: '16px', marginBottom: '16px' }}
+                    onClick={() => navigate('/admin')}
+                >
+                  Admin Management
+                </Button>
+
+                <div style={{ marginLeft: '2px' }}>
+                  <HistorySidebar
+                      history={history}
+                      setSelectedHistoryIndex={setSelectedHistoryIndex}
+                      restoreChatContent={restoreChatContent}
+                      updateHistory={updateHistory}
+                  />
+                </div>
               </div>
+
             </Sider>
         )}
         {collapsed && ( // 新增悬浮的 BarsOutlined 图标
@@ -424,7 +437,6 @@ const ChatLLM = () => {
                   top: '20px',
                   left: '20px',
                   fontSize: '25px',
-                  color: '#fff',
                   zIndex: 1000,
                   cursor: 'pointer',
                 }}
