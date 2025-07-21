@@ -6,7 +6,7 @@ interface GuestProps {
 const GuestMenu = (prop: GuestProps) => {
   const { content } = prop;
   const success = () => {
-    message.success('复制成功');
+    message.success('Copied successfully');
   };
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
@@ -15,7 +15,7 @@ const GuestMenu = (prop: GuestProps) => {
   return (
     <Flex gap="small" vertical>
       <Flex wrap gap="small">
-        <Tooltip title="复制">
+        <Tooltip title="Copy">
           <Button
             onClick={handleCopy}
             type="primary"
@@ -23,7 +23,7 @@ const GuestMenu = (prop: GuestProps) => {
             icon={<CopyTwoTone />}
           />
         </Tooltip>
-        <Tooltip title="编辑">
+        <Tooltip title="Edit">
           <Button icon={<EditTwoTone />} />
         </Tooltip>
       </Flex>

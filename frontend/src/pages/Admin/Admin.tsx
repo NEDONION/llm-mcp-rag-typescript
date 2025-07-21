@@ -7,7 +7,7 @@ import {
     Table,
     Popconfirm,
     message,
-    Tooltip,
+    Tooltip, Space,
 } from 'antd';
 import {
     PlusOutlined,
@@ -133,70 +133,29 @@ const AdminPage: React.FC = () => {
     }, []);
 
     return (
+
         <AdminLayout>
             <Layout>
                 <Header
-                    style={{background: '#fff', padding: '0 24px', display: 'flex', justifyContent: 'space-between'}}>
+                    style={{background: 'transparent', padding: '0 24px', display: 'flex', justifyContent: 'space-between'}}>
                     <h2>Knowledge Management</h2>
                     <div>
-                        <Button
-                            icon={<ArrowLeftOutlined/>}
-                            style={{
-                                marginRight: 12,
-                                padding: '6px 20px',
-                                border: 'none',
-                                background: '#1677ff',
-                                color: '#fff',
-                                fontWeight: 600,
-                                fontSize: 16,
-                                borderRadius: 8,
-                                boxShadow: '0 4px 10px rgba(22, 119, 255, 0.5)',
-                                transition: 'all 0.3s ease',
-                            }}
-                            onClick={() => navigate('/')}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.background = '#3c9eff';
-                                e.currentTarget.style.boxShadow = '0 6px 18px rgba(0, 123, 255, 0.7)';
-                                e.currentTarget.style.transform = 'scale(1.03)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.background = '#1677ff';
-                                e.currentTarget.style.boxShadow = '0 4px 10px rgba(22, 119, 255, 0.5)';
-                                e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                        >
-                            Back
-                        </Button>
-                        <Button
-                            icon={<PlusOutlined/>}
-                            style={{
-                                padding: '6px 20px',
-                                border: 'none',
-                                background: '#1677ff',
-                                color: '#fff',
-                                fontWeight: 600,
-                                fontSize: 16,
-                                borderRadius: 8,
-                                boxShadow: '0 4px 10px rgba(22, 119, 255, 0.5)',
-                                transition: 'all 0.3s ease',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 8,
-                            }}
-                            onClick={handleAdd}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.background = '#3c9eff';
-                                e.currentTarget.style.boxShadow = '0 6px 18px rgba(0, 123, 255, 0.7)';
-                                e.currentTarget.style.transform = 'scale(1.03)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.background = '#1677ff';
-                                e.currentTarget.style.boxShadow = '0 4px 10px rgba(22, 119, 255, 0.5)';
-                                e.currentTarget.style.transform = 'scale(1)';
-                            }}
-                        >
-                            Add Knowledge
-                        </Button>
+                        <Space>
+                            <Button
+                                icon={<ArrowLeftOutlined />}
+                                onClick={() => navigate('/')}
+                            >
+                                Back
+                            </Button>
+
+                            <Button
+                                icon={<PlusOutlined />}
+                                type="primary"
+                                onClick={handleAdd}
+                            >
+                                Add Knowledge
+                            </Button>
+                        </Space>
                     </div>
                 </Header>
                 <Content style={{margin: '24px 16px'}}>

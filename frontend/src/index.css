@@ -30,13 +30,11 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: var(--bg-color);
-  color: var(--text-color);
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-  color: var(--text-color);
 }
 
 input,
@@ -52,28 +50,6 @@ button:focus {
   box-shadow: none !important;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--button-bg);
-  color: var(--button-text);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-button:hover {
-  background-color: var(--button-hover);
-}
-
-button:focus,
-button:focus-visible {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
 
 @media (prefers-color-scheme: light) {
   :root {

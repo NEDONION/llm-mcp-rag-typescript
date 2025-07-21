@@ -1,6 +1,6 @@
 // src/components/AdminLayout.tsx
 import React from 'react';
-import { Layout } from 'antd';
+import {Layout} from 'antd';
 import AdminSidebar from '../../pages/AdminSidebar/AdminSidebar.tsx';
 
 const { Sider, Content } = Layout;
@@ -12,11 +12,11 @@ interface AdminLayoutProps {
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <Sider width={220} style={{ background: '#fff', borderRight: '1px solid #f0f0f0' }}>
+            <Sider width={220} style={{ background: 'transparent', borderRight: 'transparent' }}>
                 <AdminSidebar />
             </Sider>
             <Layout>
-                <Content style={{ padding: 24, background: '#f9f9f9' }}>{children}</Content>
+                <Content style={{ padding: 24, background: 'transparent' }}>{children}</Content>
             </Layout>
         </Layout>
     );

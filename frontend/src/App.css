@@ -1,7 +1,6 @@
 /* 全局变量 - 亮色主题 */
 :root {
   --bg-color: #ffffff;
-  --text-color: #333333;
   --secondary-bg: #f5f5f5;
   --border-color: #e5e5e5;
   --accent-color: #0d6efd;
@@ -9,9 +8,6 @@
   --shadow-color: rgba(0, 0, 0, 0.08);
   --input-bg: #ffffff;
   --secondary-text: #666666;
-  --button-bg: #ffffff;
-  --button-text: #333333;
-  --button-hover: #f5f5f5;
   --sidebar-bg: #f8f9fa;
   --sidebar-text: #333333;
   --sidebar-border: #e5e5e5;
@@ -19,25 +15,6 @@
   --placeholder-text: #bfcad6;
 }
 
-/* 全局变量 - 暗色主题 */
-[data-theme='dark'] {
-  --bg-color: #1a1b1e;
-  --text-color: #e9ecef;
-  --secondary-bg: #2c2e33;
-  --border-color: #373a40;
-  --accent-color: transparent;
-  --hover-color: #373a40;
-  --shadow-color: rgba(0, 0, 0, 0.3);
-  --input-bg: #2c2e33;
-  --secondary-text: #a1a1aa;
-  --button-bg: transparent;
-  --button-text: #ffffff;
-  --button-hover: transparent;
-  --sidebar-bg: #212121;
-  --sidebar-text: #ffffff;
-  --sidebar-border: #373a40;
-  --message-bg: #2c2e33;
-}
 
 /* 全局样式 */
 body {
@@ -45,34 +22,13 @@ body {
   padding: 0;
   min-height: 100vh;
   background-color: var(--bg-color);
-  color: var(--text-color);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
     Arial, sans-serif;
 }
 
-/* 主题切换按钮 */
-.theme-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  font-size: 1.25rem;
-  background-color: transparent !important;
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px var(--shadow-color);
-  z-index: 1000;
-  color: var(--text-color);
-}
+
 
 .theme-toggle:hover {
   transform: scale(1.1);
@@ -86,7 +42,6 @@ body {
 
 .theme-toggle svg {
   fill: transparent !important;
-  stroke: var(--text-color);
 }
 
 /* 聊天界面样式 */
@@ -119,7 +74,6 @@ body {
   padding: 15px;
   margin: 10px 0;
   box-shadow: 0 2px 8px var(--shadow-color);
-  color: var(--text-color);
 }
 
 /* 滚动条样式 */
@@ -147,7 +101,6 @@ body {
 input,
 textarea {
   background-color: var(--input-bg);
-  color: var(--text-color);
   border: 2px solid var(--border-color);
   border-radius: 8px;
   padding: 10px;
@@ -195,7 +148,6 @@ textarea:focus {
 
 /* 确保文本颜色正确 */
 .chat-input-search {
-  color: var(--text-color) !important;
   background-color: var(--input-bg) !important;
   font-weight: 600 !important;
   font-size: 16px !important;
@@ -204,15 +156,10 @@ textarea:focus {
 .chat-guest-text,
 .chat-ai-answer,
 .chat-ai-footer {
-  color: var(--text-color) !important;
   font-weight: 600 !important;
   font-size: 16px !important;
 }
 
-/* 强制应用文本颜色 */
-* {
-  color: var(--text-color);
-}
 
 ::placeholder {
   color: var(--placeholder-text) !important;
@@ -230,30 +177,16 @@ textarea:focus {
   font-weight: 600;
 }
 
-/* 按钮样式 */
-button {
-  background-color: transparent !important;
-  color: var(--button-text) !important;
-  border: none !important;
-  font-weight: 600 !important;
-}
-
-button:hover {
-  background-color: transparent !important;
-  opacity: 0.9;
-}
 
 /* 消息样式 */
 .chat-message {
   background-color: var(--message-bg) !important;
   border: 2px solid var(--border-color) !important;
-  color: var(--text-color) !important;
 }
 
 .chat-guest-text {
   background-color: var(--message-bg) !important;
   border: 2px solid var(--border-color) !important;
-  color: var(--text-color) !important;
   font-weight: 600 !important;
 }
 
@@ -266,7 +199,6 @@ button:hover {
 
 .chat-input-search {
   background-color: var(--input-bg) !important;
-  color: var(--text-color) !important;
   font-weight: 600 !important;
   font-size: 16px !important;
 }
@@ -276,21 +208,12 @@ button:hover {
   opacity: 1 !important;
 }
 
-/* 图标样式 */
-.anticon {
-  color: var(--button-text) !important;
-  font-size: 18px !important;
-  background: none !important;
-}
-
 /* 时间和复制按钮样式 */
 .chat-ai-footer {
-  color: var(--text-color) !important;
   font-weight: 500 !important;
 }
 
 .chat-ai-footer .anticon {
-  color: var(--text-color) !important;
   margin-right: 4px;
 }
 
@@ -316,7 +239,6 @@ button:hover {
 }
 
 .chat-ai-answer {
-  color: var(--text-color) !important;
   font-weight: 400 !important;
   background-color: var(--message-bg) !important;
   border: 1px solid var(--border-color) !important;
@@ -346,7 +268,6 @@ pre,
 code {
   background-color: var(--secondary-bg) !important;
   border-radius: 6px !important;
-  color: var(--text-color) !important;
   font-family: Consolas, Monaco, 'Andale Mono', monospace !important;
 }
 
