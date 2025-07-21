@@ -23,10 +23,10 @@ A lightweight, framework-free Augmented LLM Agent in TypeScript, featuring multi
 ```mermaid
 graph TB
 %% ==== User ====
-  User[User 用户]
+  User[User]
 
 %% ==== UI ====
-  subgraph "UI Layer 用户界面"
+  subgraph "UI Layer"
     UIGroup[Frontend UI - Chat]
     UIAdmin[RAG Admin Management]
   end
@@ -38,14 +38,14 @@ graph TB
 
 %% ==== Core ====
   subgraph "Core Business"
-    Agent[Agent Orchestrator 协调器]
-    LLM[LLM 大模型接入]
+    Agent[Agent Orchestrator]
+    LLM[LLM]
     RAG[RAG System]
     VectorStore[In-Memory Vector Store]
   end
 
 %% ==== Tool ====
-  subgraph "Tool Integration 工具集成层"
+  subgraph "Tool Integration"
     MCP[MCP Clients]
   end
 
@@ -141,8 +141,8 @@ graph LR
 graph TB
   subgraph "RAG System"
     Q[User Query]
-    E[Embedding Generation 向量生成]
-    S[Similarity Search 相似度搜索]
+    E[Embedding Generation]
+    S[Similarity Search]
     VS[VectorStore ]
     VI[Vector Dot Product & Top K 向量点积]
     R[Retrieved Docs 检索结果]
@@ -151,14 +151,14 @@ graph TB
     A[Final Answer]
   end
 
-  subgraph "Embedding DB 向量数据库"
+  subgraph "Embedding DB"
     DB[Embedding DB]
     D1[Doc1Embedding]
     D2[Doc2Embedding]
     DN[DocNEmbedding]
   end
 
-  subgraph "Knowledge DB 知识库文档"
+  subgraph "Knowledge DB"
     KB[Docs]
     K1[Doc 1]
     K2[Doc 2]
