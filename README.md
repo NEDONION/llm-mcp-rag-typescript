@@ -7,6 +7,8 @@ A lightweight, framework-free Augmented LLM Agent in TypeScript, featuring multi
 
 ## Demo Video
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bXcvtlj1xRg?si=dI1HWqitXs6CWvkv" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 [Watch the Demo on YouTube](https://youtu.be/bXcvtlj1xRg)
 
 
