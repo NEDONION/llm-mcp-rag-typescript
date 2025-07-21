@@ -1,5 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {Layout, Button, Modal, Form, Input, Table, Popconfirm, message, Tooltip} from 'antd';
+import {
+    Layout,
+    Button,
+    Modal,
+    Input,
+    Table,
+    Popconfirm,
+    message,
+    Tooltip,
+} from 'antd';
 import {
     PlusOutlined,
     EditOutlined,
@@ -7,7 +16,7 @@ import {
     ArrowLeftOutlined,
     CheckCircleTwoTone,
     CloseCircleTwoTone,
-    CloudUploadOutlined
+    CloudUploadOutlined,
 } from '@ant-design/icons';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
@@ -27,9 +36,15 @@ interface KnowledgeItem {
 const AdminPage: React.FC = () => {
     const [list, setList] = useState<KnowledgeItem[]>([]);
     const [loading, setLoading] = useState(false);
-    const [form] = Form.useForm();
-    const [editingSlug, setEditingSlug] = useState<string | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [editingSlug, setEditingSlug] = useState<string | null>(null);
+    const [formState, setFormState] = useState({
+        category: '',
+        title: '',
+        language: '',
+        content: '',
+    });
+
     const navigate = useNavigate();
 
     const fetchKnowledgeList = async () => {
@@ -56,20 +71,27 @@ const AdminPage: React.FC = () => {
 
     const handleEdit = (item: KnowledgeItem) => {
         setEditingSlug(item.slug);
-        form.setFieldsValue(item);
+        setFormState({
+            category: item.category,
+            title: item.title,
+            language: item.language,
+            content: item.content,
+        });
         setModalVisible(true);
     };
 
     const handleAdd = () => {
         setEditingSlug(null);
-        form.resetFields();
+        setFormState({category: '', title: '', language: '', content: ''});
         setModalVisible(true);
     };
 
     const handleSubmit = async () => {
         try {
-            const values = form.getFieldsValue();
-            await axios.post('/api/knowledge', values);
+            const payload: any = {...formState};
+            if (editingSlug) payload.slug = editingSlug;
+            console.log('Submitting:', payload);
+            await axios.post('/api/knowledge', payload);
             message.success('Saved successfully');
             setModalVisible(false);
             fetchKnowledgeList();
@@ -95,7 +117,7 @@ const AdminPage: React.FC = () => {
                         <p><strong>Model:</strong> {data.model}</p>
                         <p><strong>Vector Preview:</strong> {data.preview}</p>
                     </div>
-                )
+                ),
             });
 
             fetchKnowledgeList();
@@ -118,64 +140,62 @@ const AdminPage: React.FC = () => {
                     <h2>Knowledge Management</h2>
                     <div>
                         <Button
-                        icon={<ArrowLeftOutlined />}
-                        style={{
-                            marginRight: 12,
-                            padding: '6px 20px',
-                            border: 'none',
-                            background: '#1677ff',
-                            color: '#fff',
-                            fontWeight: 600,
-                            fontSize: 16,
-                            borderRadius: 8,
-                            boxShadow: '0 4px 10px rgba(22, 119, 255, 0.5)',
-                            transition: 'all 0.3s ease',
-                            transform: 'scale(1)',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#3c9eff'; // 更亮的蓝色
-                            e.currentTarget.style.boxShadow = '0 6px 18px rgba(0, 123, 255, 0.7)'; // 更显眼的蓝色阴影
-                            e.currentTarget.style.transform = 'scale(1.03)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = '#1677ff';
-                            e.currentTarget.style.boxShadow = '0 4px 10px rgba(22, 119, 255, 0.5)';
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                        onClick={() => navigate('/')}
+                            icon={<ArrowLeftOutlined/>}
+                            style={{
+                                marginRight: 12,
+                                padding: '6px 20px',
+                                border: 'none',
+                                background: '#1677ff',
+                                color: '#fff',
+                                fontWeight: 600,
+                                fontSize: 16,
+                                borderRadius: 8,
+                                boxShadow: '0 4px 10px rgba(22, 119, 255, 0.5)',
+                                transition: 'all 0.3s ease',
+                            }}
+                            onClick={() => navigate('/')}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#3c9eff';
+                                e.currentTarget.style.boxShadow = '0 6px 18px rgba(0, 123, 255, 0.7)';
+                                e.currentTarget.style.transform = 'scale(1.03)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = '#1677ff';
+                                e.currentTarget.style.boxShadow = '0 4px 10px rgba(22, 119, 255, 0.5)';
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
                         >
-                        Back
+                            Back
                         </Button>
                         <Button
-                        icon={<PlusOutlined />}
-                        style={{
-                            padding: '6px 20px',
-                            border: 'none',
-                            background: '#1677ff',
-                            color: '#fff',
-                            fontWeight: 600,
-                            fontSize: 16,
-                            borderRadius: 8,
-                            boxShadow: '0 4px 10px rgba(22, 119, 255, 0.5)',
-                            transition: 'all 0.3s ease',
-                            transform: 'scale(1)',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 8,
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#3c9eff';
-                            e.currentTarget.style.boxShadow = '0 6px 18px rgba(0, 123, 255, 0.7)';
-                            e.currentTarget.style.transform = 'scale(1.03)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = '#1677ff';
-                            e.currentTarget.style.boxShadow = '0 4px 10px rgba(22, 119, 255, 0.5)';
-                            e.currentTarget.style.transform = 'scale(1)';
-                        }}
-                        onClick={handleAdd}
+                            icon={<PlusOutlined/>}
+                            style={{
+                                padding: '6px 20px',
+                                border: 'none',
+                                background: '#1677ff',
+                                color: '#fff',
+                                fontWeight: 600,
+                                fontSize: 16,
+                                borderRadius: 8,
+                                boxShadow: '0 4px 10px rgba(22, 119, 255, 0.5)',
+                                transition: 'all 0.3s ease',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 8,
+                            }}
+                            onClick={handleAdd}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#3c9eff';
+                                e.currentTarget.style.boxShadow = '0 6px 18px rgba(0, 123, 255, 0.7)';
+                                e.currentTarget.style.transform = 'scale(1.03)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = '#1677ff';
+                                e.currentTarget.style.boxShadow = '0 4px 10px rgba(22, 119, 255, 0.5)';
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
                         >
-                        Add Knowledge
+                            Add Knowledge
                         </Button>
                     </div>
                 </Header>
@@ -195,20 +215,20 @@ const AdminPage: React.FC = () => {
                                 render: (embedded: boolean) =>
                                     embedded ? (
                                         <span style={{color: 'green'}}>
-          <CheckCircleTwoTone twoToneColor="#52c41a" style={{marginRight: 4}}/>
-          Embedded
-        </span>
+                      <CheckCircleTwoTone twoToneColor="#52c41a" style={{marginRight: 4}}/>
+                      Embedded
+                    </span>
                                     ) : (
                                         <span style={{color: 'red'}}>
-          <CloseCircleTwoTone twoToneColor="#ff4d4f" style={{marginRight: 4}}/>
-          Not embedded
-        </span>
-                                    )
+                      <CloseCircleTwoTone twoToneColor="#ff4d4f" style={{marginRight: 4}}/>
+                      Not embedded
+                    </span>
+                                    ),
                             },
                             {
                                 title: 'Actions',
                                 render: (_, record) => (
-                                    <>
+                                    <div key={record.slug}>
                                         <Tooltip title={record.embedded ? 'Already embedded' : 'Embed'}>
                                             <Button
                                                 type="primary"
@@ -221,13 +241,16 @@ const AdminPage: React.FC = () => {
                                                 Embed
                                             </Button>
                                         </Tooltip>
-                                        <Button type="link" icon={<EditOutlined/>}
-                                                onClick={() => handleEdit(record)}>Edit</Button>
+                                        <Button type="link" icon={<EditOutlined/>} onClick={() => handleEdit(record)}>
+                                            Edit
+                                        </Button>
                                         <Popconfirm title="Confirm delete?" onConfirm={() => handleDelete(record.slug)}>
-                                            <Button danger type="link" icon={<DeleteOutlined/>}>Delete</Button>
+                                            <Button danger type="link" icon={<DeleteOutlined/>}>
+                                                Delete
+                                            </Button>
                                         </Popconfirm>
-                                    </>
-                                )
+                                    </div>
+                                ),
                             },
                         ]}
                     />
@@ -238,15 +261,37 @@ const AdminPage: React.FC = () => {
                         onCancel={() => setModalVisible(false)}
                         onOk={handleSubmit}
                     >
-                        <Form layout="vertical" form={form}>
-                            <Form.Item name="category" label="Category" rules={[{required: true}]}> <Input/>
-                            </Form.Item>
-                            <Form.Item name="title" label="Title" rules={[{required: true}]}> <Input/> </Form.Item>
-                            <Form.Item name="language" label="Language" rules={[{required: true}]}> <Input/>
-                            </Form.Item>
-                            <Form.Item name="content" label="Content" rules={[{required: true}]}> <Input.TextArea
-                                rows={4}/> </Form.Item>
-                        </Form>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: 16}}>
+                            <label>
+                                Category:
+                                <Input
+                                    value={formState.category}
+                                    onChange={e => setFormState(prev => ({...prev, category: e.target.value}))}
+                                />
+                            </label>
+                            <label>
+                                Title:
+                                <Input
+                                    value={formState.title}
+                                    onChange={e => setFormState(prev => ({...prev, title: e.target.value}))}
+                                />
+                            </label>
+                            <label>
+                                Language:
+                                <Input
+                                    value={formState.language}
+                                    onChange={e => setFormState(prev => ({...prev, language: e.target.value}))}
+                                />
+                            </label>
+                            <label>
+                                Content:
+                                <Input.TextArea
+                                    rows={4}
+                                    value={formState.content}
+                                    onChange={e => setFormState(prev => ({...prev, content: e.target.value}))}
+                                />
+                            </label>
+                        </div>
                     </Modal>
                 </Content>
             </Layout>

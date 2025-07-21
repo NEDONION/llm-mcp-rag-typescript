@@ -24,6 +24,7 @@ knowledgeRouter.get('/', async (_req, res) => {
 
 // 上传知识库（支持新增或更新）
 knowledgeRouter.post('/', async (req, res) => {
+    console.log("received request to save knowledge:", req.body);
     const {category, title, language, content} = req.body;
 
     if (!category || !title || !language || !content) {
