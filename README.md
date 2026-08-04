@@ -15,7 +15,7 @@
 
 - **OpenAI-compatible chat** — a small chat client that sends requests to a compatible chat-completions endpoint.
 - **MCP tool calls** — an Agent connects to the included Fetch and filesystem MCP clients, then feeds a tool result back into the model.
-- **Knowledge and embeddings** — the admin UI stores documents and embeddings in MongoDB; retrieval uses an in-memory dot-product vector store.
+- **Knowledge and embeddings** — the admin UI stores documents and embeddings in MongoDB; retrieval uses an in-memory cosine-similarity vector store.
 
 ## Current scope
 
