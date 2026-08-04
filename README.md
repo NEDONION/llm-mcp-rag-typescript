@@ -34,8 +34,9 @@ The project avoids LangChain and LlamaIndex, but it is not dependency-free. It d
 - Node.js **18.16+**
 - pnpm **10.6.3**
 - MongoDB for the API server and admin/RAG routes
-- An OpenAI-compatible chat endpoint and an embedding endpoint that supports `BAAI/bge-m3`
-- `uv`/`uvx` for the Fetch MCP server and `npx` for the filesystem MCP server
+- An OpenAI-compatible chat endpoint that provides the `gpt-4` model ID used by the current web Agent route
+- An embedding endpoint that supports `BAAI/bge-m3`
+- `uv`/`uvx` and `npx` for the current Agent/MCP chat path; pure RAG administration and retrieval do not require `uv`
 
 ### 1. Install dependencies
 
@@ -45,7 +46,7 @@ cd llm-mcp-rag-typescript
 pnpm run setup
 ```
 
-Install `uv` if you want to use the Fetch MCP server. The filesystem MCP server is launched through `npx`.
+Install `uv` before using the current Agent chat: the route initializes the Fetch MCP server through `uvx` and the filesystem MCP server through `npx`.
 
 ### 2. Create `.env`
 
@@ -64,15 +65,7 @@ EMBEDDING_BASE_URL=https://your-embedding-endpoint/v1
 DATABASE_URL=mongodb://127.0.0.1:27017/llm_mcp_rag
 ```
 
-### 3. Run a retrieval smoke test
-
-```bash
-pnpm run dev
-```
-
-This runs `src/index.ts`, which embeds the sample `knowledge/` documents and prints RAG retrieval results. It is a RAG smoke-test path, **not** the complete application launcher.
-
-### 4. Run the web application
+### 3. Run the web application
 
 ```bash
 pnpm run all
@@ -115,17 +108,21 @@ The two paths share the API and frontend, but the current UI does not wire retri
 
 ![Augmented LLM concept](https://raw.githubusercontent.com/NEDONION/my-pics-space/main/20250717172938.png)
 
-For the detailed diagrams, see [architecture-diagram.md](architecture-diagram.md).
+## Known limitations
+
+- `pnpm run dev` points to `src/index.ts`, an incomplete legacy RAG experiment that does not currently type-check or run cleanly. It is not a Quick Start verification path.
+- The repository's legacy architecture document does not reflect the current separation between the Agent and RAG paths.
+- The project does not provide authentication, queues, file upload, or a dedicated vector database.
 
 ## Useful scripts
 
 ```bash
-pnpm run build   # Compile the TypeScript backend
-pnpm run start   # Run the compiled backend entry point
+pnpm run setup   # Install backend and frontend dependencies
 pnpm run server  # Start only the Express API on port 3000
-pnpm run dev     # Run the RAG smoke test in src/index.ts
 pnpm run all     # Start the API and Vite frontend together
 ```
+
+The `dev` script and backend `build`/`start` path still include the incomplete legacy entry point described above.
 
 ## MCP references
 
