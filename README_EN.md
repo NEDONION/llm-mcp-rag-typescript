@@ -20,7 +20,7 @@
   <a href="#quick-start">Quick Start</a> ·
   <a href="#entry-points">Entry Points</a> ·
   <a href="#how-it-works">How It Works</a> ·
-  <a href="#limitations">Limitations</a>
+  <a href="#known-limitations">Limitations</a>
 </p>
 
 This experimental project lays out three learning paths side by side: an Agent chat that calls MCP

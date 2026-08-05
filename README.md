@@ -15,12 +15,12 @@
 </p>
 
 <p align="center">
-  <a href="#demo">演示</a> ·
-  <a href="#capabilities">能力</a> ·
-  <a href="#quick-start">快速开始</a> ·
-  <a href="#entry-points">入口</a> ·
-  <a href="#how-it-works">工作原理</a> ·
-  <a href="#limitations">限制</a>
+  <a href="#演示">演示</a> ·
+  <a href="#能力">能力</a> ·
+  <a href="#快速开始">快速开始</a> ·
+  <a href="#入口">入口</a> ·
+  <a href="#工作原理">工作原理</a> ·
+  <a href="#已知限制">限制</a>
 </p>
 
 这个实验项目把三条学习路径并排展开：可调用 MCP 工具的 Agent 对话、知识文档与嵌入管理，以及
