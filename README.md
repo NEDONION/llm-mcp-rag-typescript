@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://www.typescriptlang.org/"><img alt="TypeScript 5.8" src="https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white" /></a>
-  <a href="https://nodejs.org/"><img alt="Node.js 18.16+" src="https://img.shields.io/badge/Node.js-%3E%3D18.16-339933?logo=node.js&logoColor=white" /></a>
+  <a href="https://nodejs.org/"><img alt="Node.js 20+" src="https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white" /></a>
   <a href="https://pnpm.io/"><img alt="pnpm 10.6.3" src="https://img.shields.io/badge/pnpm-10.6.3-F69220?logo=pnpm&logoColor=white" /></a>
   <a href="https://github.com/modelcontextprotocol/typescript-sdk"><img alt="MCP SDK 1.16.0" src="https://img.shields.io/badge/MCP%20SDK-1.16.0-6B4EFF" /></a>
 </p>
@@ -29,7 +29,9 @@
 <a id="demo"></a>
 ## 演示
 
-[![观看 YouTube 演示](https://img.youtube.com/vi/bXcvtlj1xRg/0.jpg)](https://www.youtube.com/watch?v=bXcvtlj1xRg)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=bXcvtlj1xRg"><img alt="观看 YouTube 演示" src="https://img.youtube.com/vi/bXcvtlj1xRg/0.jpg" /></a>
+</p>
 
 <p align="center"><sub>从 Web 对话到 MCP 工具调用：先看实际交互，再回到代码拆解每个边界。</sub></p>
 
@@ -45,7 +47,7 @@
 
 > [!IMPORTANT]
 > 这是一个学习和实验项目，不是生产部署模板。Agent/MCP 对话与 RAG 检索目前**明确分离**：聊天页可以
-> 调用 Agent 和 MCP 工具；RAG 与管理页负责文档、嵌入和检索；Web 聊天尚未把上传文档的检索结果注入
+> 调用 Agent 和 MCP 工具；RAG 与管理页负责文档、嵌入和检索；Web 聊天尚未把已管理的知识文档的检索结果注入
 > Agent 回复，因此它不是端到端文档问答示例。
 
 <a id="quick-start"></a>
@@ -53,7 +55,7 @@
 
 ### 前置条件
 
-- Node.js **18.16+**
+- Node.js **20+**
 - pnpm **10.6.3**
 - MongoDB：供 API 服务、管理页与 RAG 路由使用
 - 提供当前 Web Agent 路由所用 `gpt-4` 模型 ID 的 OpenAI 兼容聊天端点

@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://www.typescriptlang.org/"><img alt="TypeScript 5.8" src="https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white" /></a>
-  <a href="https://nodejs.org/"><img alt="Node.js 18.16+" src="https://img.shields.io/badge/Node.js-%3E%3D18.16-339933?logo=node.js&logoColor=white" /></a>
+  <a href="https://nodejs.org/"><img alt="Node.js 20+" src="https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white" /></a>
   <a href="https://pnpm.io/"><img alt="pnpm 10.6.3" src="https://img.shields.io/badge/pnpm-10.6.3-F69220?logo=pnpm&logoColor=white" /></a>
   <a href="https://github.com/modelcontextprotocol/typescript-sdk"><img alt="MCP SDK 1.16.0" src="https://img.shields.io/badge/MCP%20SDK-1.16.0-6B4EFF" /></a>
 </p>
@@ -31,7 +31,9 @@ OpenAI-compatible APIs, MCP, and RAG.
 <a id="demo"></a>
 ## Demo
 
-[![Watch the demo on YouTube](https://img.youtube.com/vi/bXcvtlj1xRg/0.jpg)](https://www.youtube.com/watch?v=bXcvtlj1xRg)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=bXcvtlj1xRg"><img alt="Watch the demo on YouTube" src="https://img.youtube.com/vi/bXcvtlj1xRg/0.jpg" /></a>
+</p>
 
 <p align="center"><sub>See the Web chat and MCP tool calls first, then trace the boundaries in code.</sub></p>
 
@@ -49,15 +51,15 @@ OpenAI-compatible APIs, MCP, and RAG.
 > This is a learning and experimental project, not a production deployment template. The Agent/MCP
 > chat and RAG retrieval paths are **deliberately separate** today: the chat page can call the Agent
 > and MCP tools; the RAG and admin pages manage documents, embeddings, and retrieval; the Web chat
-> does not inject retrieved uploaded-document context into Agent responses. It is therefore not an
-> end-to-end document-Q&A example.
+> does not inject retrieved context from managed knowledge documents into Agent responses, so this
+> is not an end-to-end document-Q&A example.
 
 <a id="quick-start"></a>
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js **18.16+**
+- Node.js **20+**
 - pnpm **10.6.3**
 - MongoDB for the API server, admin pages, and RAG routes
 - An OpenAI-compatible chat endpoint that serves the `gpt-4` model ID used by the current Web Agent route
@@ -170,5 +172,6 @@ described above.
 
 ## Contributing
 
-Issues, ideas, and small focused pull requests are welcome. Please document new environment
-variables and update the relevant run instructions whenever behavior changes.
+[Issues](https://github.com/NEDONION/llm-mcp-rag-typescript/issues), ideas, and small focused pull
+requests are welcome. Please document new environment variables and update the relevant run
+instructions whenever behavior changes.
